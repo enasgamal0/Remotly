@@ -24,8 +24,8 @@
               <base-input
                 col="3"
                 type="text"
-                :placeholder="$t('PLACEHOLDERS.influencer_name')"
-                v-model.trim="filterOptions.influencer_name"
+                :placeholder="$t('PLACEHOLDERS.teacher_name')"
+                v-model.trim="filterOptions.teacher_name"
               />
 
               <!-- End::company Name Input -->
@@ -37,34 +37,14 @@
                 v-model="filterOptions.phone"
               />
               <!-- End:: Status Input -->
-
-              <!-- Start:: sender_email Input -->
-              <base-input
+              <!-- Start:: Foundation Input -->
+              <base-select-input
                 col="3"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.sender_email')"
-                v-model="filterOptions.email"
+                :optionsList="foundations"
+                :placeholder="$t('PLACEHOLDERS.foundation')"
+                v-model="filterOptions.foundation"
               />
-              <!-- End:: sender_email Input -->
-
-              <!-- Start:: country Input -->
-              <base-select-input
-                :optionsList="countries"
-                col="4"
-                type="text"
-                :placeholder="$t('PLACEHOLDERS.country')"
-                v-model="filterOptions.country"
-              />
-              <!-- End:: country Input -->
-
-              <!-- Start:: nationality Input -->
-              <base-select-input
-                :optionsList="nationalities"
-                col="4"
-                :placeholder="$t('PLACEHOLDERS.nationality')"
-                v-model="filterOptions.nationality"
-              />
-              <!-- End:: nationality Input -->
+              <!-- End:: Foundation Input -->
             </div>
 
             <div class="btns_wrapper">
@@ -88,7 +68,7 @@
       <!--  =========== Start:: Table Title =========== -->
       <div class="table_title_wrapper">
         <div class="title_text_wrapper">
-          <h5>{{ $t("PLACEHOLDERS.influencers_join_requests") }}</h5>
+          <h5>{{ $t("PLACEHOLDERS.teachers_join_requests") }}</h5>
           <button
             v-if="!filterFormIsActive"
             class="filter_toggler"
@@ -146,7 +126,6 @@
           </div>
         </template>
         <!-- End:: Item Image -->
-        <!-- Start:: Title -->
         <template v-slot:[`item.title`]="{ item }">
           <p class="text-danger" v-if="!item.title">
             {{ $t("TABLES.noData") }}
@@ -154,13 +133,33 @@
           <p v-else>{{ item.title }}</p>
         </template>
 
-        <template v-slot:[`item.user.companyName`]="{ item }">
-          <p class="text-danger" v-if="!item.user.companyName">
-            {{ $t("TABLES.noData") }}
+        <template v-slot:[`item.mobile`]="{ item }">
+          <p v-if="!item.mobile">
+            -
           </p>
-          <p v-else>{{ item.user.companyName }}</p>
+          <p v-else>{{ item.mobile }}</p>
         </template>
-        <!-- End:: Title -->
+
+        <template v-slot:[`item.foundation_type_text`]="{ item }">
+          <p v-if="!item.foundation_type_text">
+            -
+          </p>
+          <p v-else>{{ item.foundation_type_text }}</p>
+        </template>
+
+        <template v-slot:[`item.gender_text`]="{ item }">
+          <p v-if="!item.gender_text">
+            -
+          </p>
+          <p v-else>{{ item.gender_text }}</p>
+        </template>
+
+        <template v-slot:[`item.country.name`]="{ item }">
+          <p v-if="!item.country?.name">
+            -
+          </p>
+          <p v-else>{{ item.country?.name }}</p>
+        </template>
 
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
@@ -175,7 +174,7 @@
             </a-tooltip>
 
             <div class="actions">
-              <a-tooltip placement="bottom">
+              <a-tooltip placement="bottom" v-if="$can('teacher requests accept', 'teacher-requests')">
                 <template slot="title">
                   <span>{{ $t("BUTTONS.accept") }}</span>
                 </template>
@@ -188,7 +187,7 @@
               </a-tooltip>
               <a-tooltip
                 placement="bottom"
-                v-if="$can('influencers activate', 'influencers')"
+                v-if="$can('teacher requests reject', 'teacher-requests')"
               >
                 <template slot="title">
                   <span>{{ $t("BUTTONS.reject") }}</span>
@@ -269,35 +268,44 @@
 
           <v-dialog v-model="dialogStatusReject">
             <v-card>
-              <!-- <v-card-title class="text-h5 justify-center">
-                {{ $t("PLACEHOLDERS.accept_settlement_request") }}
-              </v-card-title> -->
-              <div class="w-100">
-                <div class="mt-3">
-                  <div>
-                    <label class="font-weight-bold mx-1 w-100 text-center" style="font-size: 16px;"
-                      >{{ $t("PLACEHOLDERS.reason_reject") }}
-                    </label>
-                    <base-input
-                      type="textarea"
-                      v-model.trim="modalRequest.reason"
-                    />
-                    <div class="text-center mt-5">
-                      <v-btn
-                        class="modal_confirm_btn mx-1 bg-success text-white"
-                        @click="approvedInfluencers(modalRequest, 'rejected')"
-                        :disabled="!!!modalRequest.reason || modalRequest.reason?.length < 3"
-                        >{{ $t("BUTTONS.save") }}</v-btn
-                      >
-                      <v-btn
-                        class="modal_confirm_btn mx-1 bg-danger text-white"
-                        @click="cancelRequest()"
-                        >{{ $t("BUTTONS.cancel") }}</v-btn
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <v-card-title
+                class="text-h5 justify-center"
+                v-if="itemToChangeActivationStatus"
+              >
+                {{
+                  $t("TITLES.DeactivateConfirmingMessage", {
+                    name: itemToChangeActivationStatus.name,
+                  })
+                }}
+              </v-card-title>
+
+              <form class="w-100">
+                <base-input
+                  col="12"
+                  rows="3"
+                  type="textarea"
+                  :placeholder="$t('PLACEHOLDERS.deactivateReason')"
+                  v-model.trim="deactivateReason"
+                  required
+                />
+              </form>
+
+              <v-card-actions>
+                <v-btn
+                  class="modal_confirm_btn"
+                  @click="rejectTeachers(itemToChangeActivationStatus)"
+                  :disabled="!!!deactivateReason || deactivateReason?.length < 3"
+                >
+                  {{ $t("BUTTONS.ok") }}
+                </v-btn>
+
+                <v-btn
+                  class="modal_cancel_btn"
+                  @click="dialogDeactivate = false, deactivateReason = null"
+                  >{{ $t("BUTTONS.cancel") }}</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
             </v-card>
           </v-dialog>
         </template>
@@ -360,6 +368,20 @@ export default {
         },
       ];
     },
+    foundations() {
+      return [
+        {
+          id: 1,
+          name: this.$t("PLACEHOLDERS.schools"),
+          value: "schools",
+        },
+        {
+          id: 2,
+          name: this.$t("PLACEHOLDERS.universities"),
+          value: "universities",
+        },
+      ];
+    },
   },
 
   data() {
@@ -372,11 +394,9 @@ export default {
       // Start:: Filter Data
       filterFormIsActive: false,
       filterOptions: {
-        influencer_name: null,
+        teacher_name: null,
         phone: null,
-        email: null,
-        country: null,
-        nationality: null,
+        foundation: null,
       },
       // End:: Filter Data
       countries: [],
@@ -391,14 +411,8 @@ export default {
           sortable: false,
         },
         {
-          text: this.$t("PLACEHOLDERS.influencer_name"),
+          text: this.$t("PLACEHOLDERS.teacher_name"),
           value: "name",
-          sortable: false,
-          align: "center",
-        },
-        {
-          text: this.$t("PLACEHOLDERS.sender_email"),
-          value: "email",
           sortable: false,
           align: "center",
         },
@@ -409,14 +423,26 @@ export default {
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.country"),
-          value: "country_id.name",
+          text: this.$t("PLACEHOLDERS.foundation"),
+          value: "foundation_type_text",
           sortable: false,
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.nationality"),
-          value: "nationality_id.name",
+          text: this.$t("PLACEHOLDERS.gender"),
+          value: "gender_text",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.country"),
+          value: "country.name",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("SIDENAV.orders.created_at"),
+          value: "created_at",
           sortable: false,
           align: "center",
         },
@@ -428,12 +454,15 @@ export default {
         },
       ],
       tableRows: [],
+      teacher_status: null,
       // End:: Table Data
 
       // Start:: Dialogs Control Data
 
       dialogStatusAccept: false,
       dialogStatusReject: false,
+      itemToChangeActivationStatus: null,
+      deactivateReason: null,
 
       dialogImage: false,
       selectedItemImage: null,
@@ -473,7 +502,7 @@ export default {
     async submitFilterForm() {
       if (this.$route.query.page !== "1") {
         await this.$router.push({
-          path: "/influencers-requests/all",
+          path: "/teachers-requests/all",
           query: { page: 1 },
         });
       }
@@ -481,21 +510,34 @@ export default {
     },
 
     // ===== End:: Delete
-    // start accepted  influencer request
-    async approvedInfluencers(item, status) {
-      const REQUEST_DATA = new FormData();
-      REQUEST_DATA.append("status", status);
-      if (status == "rejected"){
-        REQUEST_DATA.append("reject_reason", this.modalRequest.reason);
-      }
+    // start accepted  teacher request
+    async approvedTeachers(item) {
       try {
         let res = await this.$axios({
           method: "POST",
-          url: `influencers/change-statusRequest/${item.id}`,
+          url: `teacher-requests/${item.id}/accept`,
+        });
+        this.setTableRows();
+        this.dialogStatusReject = false;
+        this.itemToChangeActivationStatus = null;
+        this.$message.success(res?.data?.message);
+      } catch (error) {
+        this.$message.error(error.response.data.message);
+      }
+    },
+
+    async rejectTeachers(item) {
+      const REQUEST_DATA = new FormData();
+        REQUEST_DATA.append("rejection_reason", this.deactivateReason);
+      try {
+        let res = await this.$axios({
+          method: "POST",
+          url: `teacher-requests/${item.id}/reject`,
           data: REQUEST_DATA,
         });
         this.setTableRows();
         this.dialogStatusReject = false;
+        this.itemToChangeActivationStatus = null;
         this.$message.success(res?.data?.message);
       } catch (error) {
         this.$message.error(error.response.data.message);
@@ -521,17 +563,15 @@ export default {
         this.$message.error(error.response.data.message);
       }
     },
-    // end accepted influencer request
+    // end accepted provider request
     async resetFilter() {
-      this.filterOptions.influencer_name = null;
+      this.filterOptions.teacher_name = null;
       this.filterOptions.phone = null;
-      this.filterOptions.email = null;
-      this.filterOptions.country = null;
-      this.filterOptions.nationality = null;
+      this.filterOptions.foundation = null;
 
       if (this.$route.query.page !== "1") {
         await this.$router.push({
-          path: "/influencers-requests/all",
+          path: "/teachers-requests/all",
           query: { page: 1 },
         });
       }
@@ -557,15 +597,13 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "influencers?status=pending",
+          url: "teacher-requests?accountStatus=pending",
 
           params: {
             page: this.paginations.current_page,
-            name: this.filterOptions.influencer_name,
+            name: this.filterOptions.teacher_name,
             mobile: this.filterOptions.phone,
-            email: this.filterOptions.email,
-            country_id: this.filterOptions.country?.id,
-            nationality_id: this.filterOptions.nationality?.id,
+            foundation: this.filterOptions.foundation?.value,
           },
         });
 
@@ -582,78 +620,28 @@ export default {
 
     // Start:: Change Activation Status
     openRequestStatusModal(item, status) {
+      this.itemToChangeActivationStatus = item;
       if (status == "accepted") {
-        this.approvedInfluencers(item, status);
+        this.approvedTeachers(item);
       } else if (status == "rejected") {
         this.dialogStatusReject = true;
+        this.modalRequest = { ...item };
+        this.currentRequest = item;
       }
-      this.modalRequest = { ...item };
-      this.currentRequest = item;
     },
-    // async changeRequestStatus(modalRequest, status) {
-    //   const REQUEST_DATA = new FormData();
-    //   REQUEST_DATA.append("status", status);
-
-    //   if (status === "rejected" && modalRequest?.reason) {
-    //     REQUEST_DATA.append("reason", modalRequest?.reason);
-    //   }
-    //   // if (status === "accepted" && modalRequest?.money) {
-    //   //   REQUEST_DATA.append("amount", modalRequest?.money);
-    //   // }
-
-    //   try {
-    //     let res = await this.$axios({
-    //       method: "POST",
-    //       url: `influencers/status/${modalRequest.id}`,
-    //       data: REQUEST_DATA,
-    //     });
-
-    //     this.setTableRows();
-    //     this.dialogStatusAccept = false;
-    //     this.dialogStatusReject = false;
-    //     this.$message.success(res.data.message);
-    //   } catch (error) {
-    //     this.$message.error(error.response.data.message);
-    //   }
-    // },
-
     cancelRequest() {
       this.dialogStatusAccept = false;
       this.dialogStatusReject = false;
     },
     // End:: Change Activation Status
-    async getCountries() {
-      try {
-        let res = await this.$axios({
-          method: "GET",
-          url: `countries?page=0&limit=0`,
-        });
-        this.countries = res.data.data;
-      } catch (error) {
-        console.log(error.response.data.message);
-      }
-    },
-
-    async getNationalities() {
-      try {
-        let res = await this.$axios({
-          method: "GET",
-          url: `nationalities?page=0&limit=0`,
-        });
-        this.nationalities = res.data.data;
-      } catch (error) {
-        console.log(error.response.data.message);
-      }
-    },
-
     // ==================== Start:: Crud ====================
     // ===== Start:: End
     editItem(item) {
-      this.$router.push({ path: `/influencers-requests/edit/${item.id}` });
+      this.$router.push({ path: `/teachers-requests/edit/${item.id}` });
     },
 
     showItem(item) {
-      this.$router.push({ path: `/influencers-requests/show/${item.id}` });
+      this.$router.push({ path: `/teachers-requests/show/${item.id}` });
     },
     // ===== End:: End
 
@@ -675,8 +663,6 @@ export default {
     if (this.$route.query.page) {
       this.paginations.current_page = +this.$route.query.page;
     }
-    this.getNationalities();
-    this.getCountries();
     this.setTableRows();
 
     // End:: Fire Methods

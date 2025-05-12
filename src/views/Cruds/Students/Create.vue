@@ -241,6 +241,7 @@ export default {
         foundation: null,
         foundation_name: null,
         date: null,
+        iso_code: null
       },
       // End:: Data Collection To Send
     };
@@ -331,7 +332,7 @@ export default {
 
       // Start:: Append Request Data
       if (this.data.image?.file) {
-        REQUEST_DATA.append("avatar", this.data.image.file);
+        REQUEST_DATA.append("image", this.data.image.file);
       }
 
       if (this.data.client_name) {

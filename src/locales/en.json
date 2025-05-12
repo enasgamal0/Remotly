@@ -1136,6 +1136,8 @@
   },
 
   "BUTTONS": {
+    "cv": "Show CV",
+    "educational": "Show Educational Certificate",
     "copy_prev": "Add as Previous",
     "post": "Post",
     "send_reply": "Send Reply",
@@ -1257,8 +1259,17 @@
   },
 
   "PLACEHOLDERS": {
+    "view_provider_data": "Show Provider Data",
+    "video": "Video",
+    "expertise_area": "Area of Expertise",
+    "number_year_experience": "Years of Experience",
+    "current_job": "Current Job",
+    "id_number": "National ID",
+    "about": "Bio",
+    "spoken_languages": "Spoken Languages",
     "teachers_management": "Providers Management (Teachers)",
     "teachers_join_requests": "Providers Joining Requests",
+    "teacher_name": "Provider Name",
     "teachers": "Accepted Providers Management",
     "university_name": "University Name",
     "school_name": "School Name",

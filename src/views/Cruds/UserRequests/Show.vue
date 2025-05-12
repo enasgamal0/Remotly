@@ -2,7 +2,7 @@
   <div class="crud_form_wrapper">
     <!-- Start:: Title -->
     <div class="form_title_wrapper">
-      <h4>{{ $t("PLACEHOLDERS.view_influencer_data") }}</h4>
+      <h4>{{ $t("PLACEHOLDERS.view_provider_data") }}</h4>
     </div>
     <div class="col-12 text-end">
       <v-btn @click="$router.go(-1)" style="color: #af18f9">
@@ -13,8 +13,16 @@
 
     <!-- Start:: Single Step Form Content -->
     <div class="single_step_form_content_wrapper">
-      <form @submit.prevent="validateFormInputs">
+      <form>
         <div class="row">
+          <div class="preview-container text-center my-3">
+            <img
+              v-if="data.image?.path"
+              col="12"
+              :src="data.image?.path"
+              :alt="$t('PLACEHOLDERS.personalImage')"
+            />
+          </div>
           <!-- Start:: Name Input -->
           <base-input
             col="6"
@@ -24,6 +32,7 @@
             disabled
           />
           <base-input
+            v-if="data.email"
             col="6"
             type="text"
             :placeholder="$t('PLACEHOLDERS.email')"
@@ -35,30 +44,21 @@
             type="text"
             :placeholder="$t('PLACEHOLDERS.phone')"
             v-model.trim="fullPhoneNumber"
-            style="direction: ltr;"
+            style="direction: ltr"
             disabled
           />
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.whatsapp')"
-            v-model.trim="fullWhatsappNumber"
-            style="direction: ltr;"
-            v-if="data.whatsapp"
+            :placeholder="$t('TABLES.Clients.age')"
+            v-model.trim="data.age"
             disabled
           />
-          <!-- <base-input
-            col="6"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.user_name')"
-            v-model.trim="data.user_name"
-            disabled
-          /> -->
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.nationality')"
-            v-model.trim="data.nationality"
+            :placeholder="$t('PLACEHOLDERS.gender')"
+            v-model.trim="data.gender_text"
             disabled
           />
           <base-input
@@ -71,42 +71,99 @@
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('TABLES.Users.joiningDate')"
-            v-model.trim="data.birth_date"
+            :placeholder="$t('PLACEHOLDERS.about')"
+            v-model.trim="data.about"
             disabled
           />
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.hobbies')"
-            v-model.trim="data.hobbies"
+            :placeholder="$t('PLACEHOLDERS.spoken_languages')"
+            v-model.trim="data.spoken_languages"
             disabled
           />
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.gender')"
-            v-model.trim="data.gender"
+            :placeholder="$t('PLACEHOLDERS.id_number')"
+            v-model.trim="data.id_number"
             disabled
           />
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.address')"
-            v-model.trim="data.address"
+            :placeholder="$t('PLACEHOLDERS.expertise_area')"
+            v-model.trim="data.expertise_area"
             disabled
           />
-          <hr style="width: 97%;"/>
-          <label class="mt-5 mb-3 font-weight-bold" style="color: #af18f9; font-size: 16px;">{{ $t('PLACEHOLDERS.social_media_accounts') }}</label>
           <base-input
-            v-for="(account) in data.social_media_accounts"
-            :key="account.id"
             col="6"
             type="text"
-            :placeholder="account.platform"
-            v-model.trim="account.account_name"
+            :placeholder="$t('PLACEHOLDERS.number_year_experience')"
+            v-model.trim="data.number_year_experience"
             disabled
           />
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.current_job')"
+            v-model.trim="data.current_job"
+            disabled
+          />
+          <div class="row m-auto" style="font-size: 16px;">
+            <div class="col-6 mb-2">
+              <a
+                v-if="data.educational"
+                :href="data.educational"
+                download
+                target="_blank"
+                class="d-block text-center text-decoration-none py-2 download_btn"
+                style="border: 1px #af18f9 solid; border-radius: 8px;"
+              >
+                {{ $t("BUTTONS.educational") }} <i class="fal fa-file-pdf mx-3"></i>
+              </a>
+            </div>
+            <div class="col-6 mb-2">
+              <a
+                v-if="data.cv"
+                :href="data.cv"
+                download
+                target="_blank"
+                class="d-block text-center text-decoration-none py-2 download_btn"
+                style="border: 1px #af18f9 solid; border-radius: 8px;"
+              >
+                {{ $t("BUTTONS.cv") }} <i class="fal fa-file-pdf mx-3"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="d-flex justify-center gap-3 flex-wrap mt-5">
+            <div v-if="data.video">
+              <!-- Display video -->
+              <div class="preview-container text-center my-3">
+                <h6 style="color: #af18f9">{{ $t("PLACEHOLDERS.video") }}</h6>
+                <video
+                  v-if="
+                    [
+                      'mp4',
+                      'mov',
+                      'avi',
+                      'wmv',
+                      'flv',
+                      'mkv',
+                      'webm',
+                      'm4v',
+                    ].some((ext) => data.video.endsWith(ext))
+                  "
+                  :src="data.video"
+                  controls
+                  autoplay
+                  loop
+                ></video>
+                <img v-else :src="data.video" alt="Advertisement Image" />
+              </div>
+            </div>
+          </div>
         </div>
       </form>
     </div>
@@ -116,7 +173,7 @@
 
 <script>
 export default {
-  name: "CreateInfluencer",
+  name: "ShowProvider",
   data() {
     return {
       // Start:: Loader Control Data
@@ -128,6 +185,10 @@ export default {
 
       // Start:: Data Collection To Send
       data: {
+        image: {
+          path: null,
+          file: null,
+        },
         name: null,
         email: null,
         country_code: null,
@@ -135,20 +196,19 @@ export default {
         whatsapp: null,
         whatsapp_country_code: null,
         user_name: null,
-        social_media_accounts: [],
         nationality: null,
         country: null,
         birth_date: null,
         hobbies: [],
         address: null,
-        gender: null
+        gender: null,
       },
       // End:: Data Collection To Send
       areas: [],
       arabicRegex: /^[\u0600-\u06FF\s]+$/,
       EnRegex: /[\u0600-\u06FF]/,
 
-      influencerPoints: [],
+      providerPoints: [],
       coordinates: [],
     };
   },
@@ -182,16 +242,8 @@ export default {
       this.fileType = "";
     },
 
-    // Start:: validate Form Inputs
-    validateFormInputs() {
-      this.isWaitingRequest = true;
-
-      this.submitForm();
-    },
-    // End:: validate Form Inputs
-
-    handleSaveInfluencer(coordinates) {
-      // Handle the saved influencer coordinates from the child component
+    handleSaveProvider(coordinates) {
+      // Handle the saved provider coordinates from the child component
 
       this.coordinates = coordinates;
     },
@@ -200,22 +252,31 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `influencers/${this.$route.params?.id}`,
+          url: `teacher-requests/${this.$route.params?.id}`,
         });
-        this.data.name = res.data.data.Influencer.name;
-        this.data.email = res.data.data.Influencer.email;
-        this.data.country_code = res.data.data.Influencer.country_code;
-        this.data.phone = res.data.data.Influencer.mobile;
-        this.data.whatsapp_country_code = res.data.data.Influencer.whatsapp_country_code;
-        this.data.whatsapp = res.data.data.Influencer.whatsapp_number;
-        this.data.user_name = res.data.data.Influencer.user_name;
-        this.data.social_media_accounts = res.data.data.Influencer.social_media_accounts;
-        this.data.nationality = res.data.data.Influencer.nationality_id?.name;
-        this.data.country = res.data.data.Influencer.country_id?.name;
-        this.data.birth_date = res.data.data.Influencer.birth_date;
-        this.data.hobbies = res.data.data.Influencer.hobbies?.map(hobby => hobby.name).join(' & ') || '';
-        this.data.gender = res.data.data.Influencer.gender;
-        this.data.address = res.data.data.Influencer.address;
+        this.data.image.path = res.data.data.teacher.image;
+        this.data.name = res.data.data.teacher.name;
+        this.data.email = res.data.data.teacher.email;
+        this.data.country_code = res.data.data.teacher.country_code;
+        this.data.phone = res.data.data.teacher.mobile;
+        this.data.country = res.data.data.teacher.user.details.country?.name;
+        this.data.age = res.data.data.teacher.user.details.age;
+        this.data.gender_text = res.data.data.teacher.user.details.gender_text;
+        this.data.spoken_languages =
+          res.data.data.teacher.user.details?.spoken_languages
+            ?.map((lang) => lang.name)
+            .join(" & ") || "";
+        this.data.foundation = res.data.data.teacher.user.details?.foundation;
+        this.data.about = res.data.data.teacher.user.details?.about;
+        this.data.id_number = res.data.data.teacher.user.details?.id_number;
+        this.data.expertise_area =
+          res.data.data.teacher.user.details?.expertise_area;
+        this.data.number_year_experience =
+          res.data.data.teacher.user.details?.number_year_experience;
+        this.data.current_job = res.data.data.teacher.user.details?.current_job;
+        this.data.video = res.data.data.teacher.user.details?.video;
+        this.data.educational = res.data.data.teacher.user.details?.educational;
+        this.data.cv = res.data.data.teacher.user.details?.cv;
       } catch (error) {
         this.loading = false;
         console.log(error?.response?.data?.message);
@@ -233,7 +294,18 @@ export default {
     },
     fullPhoneNumber() {
       return this.data.country_code + this.data.phone;
-    }
-  }
+    },
+  },
 };
 </script>
+<style scope>
+.download_btn {
+  color: #af18f9 !important;
+  transition: background-color 0.4s, color 0.4s;
+}
+
+.download_btn:hover {
+  background-color: #af18f9;
+  color: #fff !important;
+}
+</style>

@@ -1135,6 +1135,8 @@
   },
 
   "BUTTONS": {
+    "cv": "عرض السيرة الذاتية",
+    "educational": "عرض المؤهل الدراسي",
     "copy_prev": "إضافة كالسابق",
     "post": "نشر",
     "send_reply": "إرسال رد",
@@ -1258,8 +1260,17 @@
   },
 
   "PLACEHOLDERS": {
+    "view_provider_data": "عرض بيانات مقدم خدمة",
+    "video": "الفيديو",
+    "expertise_area": "مجال الخبرة",
+    "number_year_experience": "عدد سنوات الخبرة",
+    "current_job": "الوظيفة الحالية",
+    "id_number": "رقم الهوية",
+    "about": "نبذة تعريفية",
+    "spoken_languages": "اللغات المنطوقة",
     "teachers_management": "إدارة مقدمي الخدمة (المعلمين)",
     "teachers_join_requests": "طلبات انضمام مقدمي الخدمة",
+    "teacher_name": "اسم مقدم الخدمة",
     "teachers": "إدارة مقدمي الخدمة المقبولين",
     "university_name": "اسم الجامعة",
     "school_name": "اسم المدرسة",
