@@ -10,8 +10,10 @@
       </div>
       <!--  =========== End:: Table Title =========== -->
 
+      <ComingSoon/>
+
       <!--  =========== Start:: Data Table =========== -->
-      <div class="statics mt-4">
+      <!-- <div class="statics mt-4">
         <div class="row">
           <div
             class="col-lg-6 col-md-6 col-12"
@@ -45,7 +47,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <!--  =========== End:: Data Table =========== -->
     </main>
     <!-- End:: Main Section -->

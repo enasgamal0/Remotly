@@ -276,13 +276,13 @@ import AllClientRequests from "../views/Cruds/ClientRequests/ShowAll.vue";
 import ShowClientRequests from "../views/Cruds/ClientRequests/Show.vue";
 // ============== Start:: UserRequests Routes =================
 
-// ============== Start:: Influencers Routes
-import InfluencersHome from "../views/Cruds/Influencers/Home.vue";
-import AllInfluencers from "../views/Cruds/Influencers/ShowAll.vue";
-import CreateInfluencers from "../views/Cruds/Influencers/Create.vue";
-import ShowInfluencers from "../views/Cruds/Influencers/Show.vue";
-import EditInfluencers from "../views/Cruds/Influencers/Edit.vue";
-// ============== End:: Influencers Routes
+// ============== Start:: Teachers Routes
+import TeachersHome from "../views/Cruds/Teachers/Home.vue";
+import AllTeachers from "../views/Cruds/Teachers/ShowAll.vue";
+import CreateTeachers from "../views/Cruds/Teachers/Create.vue";
+import ShowTeachers from "../views/Cruds/Teachers/Show.vue";
+import EditTeachers from "../views/Cruds/Teachers/Edit.vue";
+// ============== End:: Teachers Routes
 
 // ============== Start:: Blogs Routes
 import BlogsHome from "../views/Cruds/Blogs/Home.vue";
@@ -1902,68 +1902,68 @@ const routes = [
       // },
       // End:: WalletHistory Config
 
-      // Start:: Influencers  Config
+      // Start:: Teachers  Config
       {
-        path: "/influencers",
-        name: "influencers",
-        component: InfluencersHome,
+        path: "/teachers",
+        name: "teachers",
+        component: TeachersHome,
         meta: {
           middleware: [auth],
         },
         children: [
           {
             path: "all",
-            name: "AllInfluencers",
-            component: AllInfluencers,
+            name: "AllTeachers",
+            component: AllTeachers,
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "influencers index",
-                subject: "influencers",
+                action: "teachers index",
+                subject: "teachers",
               },
             },
           },
           {
             path: "create",
-            name: "CreateInfluencers",
-            component: CreateInfluencers,
+            name: "CreateTeachers",
+            component: CreateTeachers,
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "influencers create",
-                subject: "influencers",
+                action: "teachers create",
+                subject: "teachers",
               },
             },
           },
           {
             path: "edit/:id",
-            name: "EditInfluencers",
-            component: EditInfluencers,
+            name: "EditTeachers",
+            component: EditTeachers,
             props: true,
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "influencers edit",
-                subject: "influencers",
+                action: "teachers edit",
+                subject: "teachers",
               },
             },
           },
           {
             path: "show/:id",
-            name: "ShowInfluencers",
-            component: ShowInfluencers,
+            name: "ShowTeachers",
+            component: ShowTeachers,
             props: true,
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "influencers show",
-                subject: "influencers",
+                action: "teachers show",
+                subject: "teachers",
               },
             },
           },
         ],
       },
-      // End:: Influencers Config
+      // End:: Teachers Config
 
       // Start:: Blogs  Config
       {

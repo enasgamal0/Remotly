@@ -42,7 +42,6 @@
           <base-phone-input
             col="6"
             disabled
-            dir="ltr"
             v-model="data.phone"
             @dialCode="dialCode"
             @isoCode="isoCode"

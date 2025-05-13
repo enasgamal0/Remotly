@@ -40,7 +40,6 @@
           <base-phone-input
             col="6"
             required
-            dir="ltr"
             v-model="data.phone"
             @dialCode="dialCode"
             @isoCode="isoCode"

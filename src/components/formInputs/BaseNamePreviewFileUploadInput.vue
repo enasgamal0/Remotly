@@ -8,19 +8,29 @@
         height="120"
         class="selected_image_preview"
       />
-      <div class="input_wrapper upload_file_text_preview top_label">
-        <span class="form-label">
-          {{ placeholder }}
-          <span class="text-danger" v-if="required"> * </span>
-        </span>
 
-        <label class="input_file_label" :for="identifier">
-          <span class="file_name" v-if="preSelectedFile">
-            {{ preSelectedFile }}
-          </span>
-          <span class="file_name" v-else-if="selectedFile.name">
-            {{ selectedFile.name }}
-          </span>
+      <div class="d-flex" style="font-size: 16px; color: #af18f9">
+        <span class="form-label mx-2">
+          {{ placeholder }} <span class="text-danger">*</span>
+        </span>
+        <a
+          v-if="preSelectedFile || selectedFile?.path"
+          :href="preSelectedFile || selectedFile?.path"
+          class="file_name"
+          target="_blank"
+          style="color: #af18f9"
+        >
+          <!-- {{ preSelectedFile?.split("/").pop() || selectedFile?.name }} -->
+          : <i class="fal fa-file-pdf mx-3"></i>
+        </a>
+      </div>
+      <div class="input_wrapper upload_file_text_preview top_label">
+        <label
+          class="input_file_label text-center"
+          style="color: #af18f9; cursor: pointer"
+          :for="identifier"
+        >
+          <i class="fa fa-upload"></i>
         </label>
 
         <input

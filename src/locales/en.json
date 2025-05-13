@@ -1136,6 +1136,7 @@
   },
 
   "BUTTONS": {
+    "addTeacher": "Add a New Provider",
     "cv": "Show CV",
     "educational": "Show Educational Certificate",
     "copy_prev": "Add as Previous",
@@ -1259,6 +1260,13 @@
   },
 
   "PLACEHOLDERS": {
+    "personal_data": "Personal Data",
+    "professional_data": "Professional Data",
+    "educational": "Academic Qualification",
+    "cv": "CV",
+    "add_teacher": "Add a New Provider",
+    "edit_teacher": "Edit Provider Data",
+    "show_teacher": "Show Provider Data",
     "view_provider_data": "Show Provider Data",
     "video": "Video",
     "expertise_area": "Area of Expertise",
@@ -1582,6 +1590,7 @@
     "sub_section": "Sub Category",
     "sub_sections": "Sub Category",
     "created_at": "Creation date",
+    "accepted_at": "Acceptance Date",
     "sender_name": "Client Name",
     "sender_phone": "Phone Number",
     "sender_email": "Email Address",

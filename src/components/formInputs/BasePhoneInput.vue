@@ -7,15 +7,17 @@
       </label>
       <!-- :key="defaultCountry" -->
       <vue-tel-input
+        style="direction: ltr"
         @input="updateValue"
         :autoFormat="false"
         @country-changed="countryChanged"
         :defaultCountry="defaultCountry"
+        inputOptions=""
         :key="defaultCountry"
         :disabled="disabled"
-        :inputOptions="{ placeholder: placeholder }"
         v-model="value"
       />
+        <!-- :inputOptions="{ placeholder: placeholder }" -->
     </div>
   </div>
 </template>
