@@ -53,7 +53,6 @@
                 type="radio"
                 v-model="data.foundation"
                 value="schools"
-                required
               />
               {{ $t("PLACEHOLDERS.schools") }}
             </label>
@@ -64,7 +63,6 @@
                 type="radio"
                 v-model="data.foundation"
                 value="universities"
-                required
               />
               {{ $t("PLACEHOLDERS.universities") }}
             </label>

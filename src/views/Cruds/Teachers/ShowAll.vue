@@ -182,10 +182,17 @@
               :href="item.educational"
               download
               target="_blank"
-              style="color: #af19faff; font-size: 20px"
+              style="color: #af19faff; font-size: 14px"
             >
-              <i class="fal fa-file-pdf mx-3"></i>
+              <span>{{ $t("BUTTONS.click_to_view") }}</span>
             </a>
+            <p v-else>-</p>
+          </div>
+        </template>
+
+        <template v-slot:[`item.request_date`]="{ item }">
+          <div class="table_image_wrapper">
+            <span v-if="item.request_date">{{ item.request_date }}</span>
             <p v-else>-</p>
           </div>
         </template>
@@ -573,16 +580,6 @@ export default {
       }
       this.setTableRows();
     },
-
-    // ===== Start:: End
-    editItem(item) {
-      this.$router.push({ path: `/teachers/edit/${item.id}` });
-    },
-    showItem(item) {
-      this.$router.push({ path: `/teachers/show/${item.id}` });
-    },
-    // ===== End:: End
-
     // ===== Start:: Delete
     selectDeleteItem(item) {
       this.dialogDelete = true;
@@ -777,7 +774,10 @@ export default {
     // ==================== Start:: Crud ====================
     // ===== Start:: End
     editItem(item) {
-      this.$router.push({ path: `/teachers/edit/${item.id}` });
+      this.$router.push({
+        path: `/teachers/edit/${item.id}`,
+        query: { f: item?.foundation_type == "schools" ? "s" : "u" },
+      });
     },
 
     showItem(item) {

@@ -21,15 +21,17 @@
           <!-- Start:: Image Upload Input -->
           <div class="d-flex justify-center gap-3 flex-wrap">
             <div v-if="data.image.path">
-            <!-- Display image -->
-            <div class="preview-container text-center my-3">
-              <h6 style="color: #af18f9;">{{ $t("PLACEHOLDERS.personalImage") }}</h6>
-              <img
-              v-if="data.image?.path"
-              col="12"
-              :src="data.image?.path"
-              :alt="$t('PLACEHOLDERS.image')"
-            />
+              <!-- Display image -->
+              <div class="preview-container text-center my-3">
+                <h6 style="color: #af18f9">
+                  {{ $t("PLACEHOLDERS.personalImage") }}
+                </h6>
+                <img
+                  v-if="data.image?.path"
+                  col="12"
+                  :src="data.image?.path"
+                  :alt="$t('PLACEHOLDERS.image')"
+                />
               </div>
             </div>
           </div>
@@ -121,7 +123,7 @@
             :multiple="true"
             disabled
           />
-          <hr class="my-5" style="width: 99%" />
+          <hr class="my-5" style="width: 97%" />
           <h5 style="color: #af18f9; font-weight: 800">
             {{ $t("PLACEHOLDERS.professional_data") }}
           </h5>
@@ -154,7 +156,47 @@
             v-model.trim="data.current_job"
             disabled
           />
-          <div class="row m-auto" style="font-size: 16px;">
+          <div v-if="data?.subjects && data?.subjects[0]?.academic_stage" v-for="(subject, index) in data?.subjects" :key="index" class="row">
+            <base-input
+              col="4"
+              type="text"
+              :placeholder="$t('PLACEHOLDERS.subject_name')"
+              v-model.trim="subject.name"
+              disabled
+            />
+            <base-input
+              col="4"
+              type="text"
+              :placeholder="$t('PLACEHOLDERS.academic_stage')"
+              v-model.trim="subject.academic_stage.data.name"
+              disabled
+            />
+            <base-input
+              col="4"
+              type="text"
+              :placeholder="$t('PLACEHOLDERS.academic_year')"
+              v-model.trim="subject.academic_year.data.name"
+              disabled
+            />
+          </div>
+
+          <div v-if="data?.subjects && data?.subjects[0]?.specialization" v-for="(subject, index) in data?.subjects" :key="index" class="row">
+            <base-input
+              col="6"
+              type="text"
+              :placeholder="$t('PLACEHOLDERS.subject_name')"
+              v-model.trim="subject.name"
+              disabled
+            />
+            <base-input
+              col="6"
+              type="text"
+              :placeholder="$t('PLACEHOLDERS.specialization')"
+              v-model.trim="subject.specialization.data.name"
+              disabled
+            />
+          </div>
+          <div class="row m-auto mt-5" style="font-size: 16px">
             <div class="col-6 mb-2">
               <a
                 v-if="data.educational?.path"
@@ -162,9 +204,10 @@
                 download
                 target="_blank"
                 class="d-block text-center text-decoration-none py-2 download_btn"
-                style="border: 1px #af18f9 solid; border-radius: 8px;"
+                style="border: 1px #af18f9 solid; border-radius: 8px"
               >
-                {{ $t("BUTTONS.educational") }} <i class="fal fa-file-pdf mx-3"></i>
+                {{ $t("BUTTONS.educational") }}
+                <!-- <i class="fal fa-file-pdf mx-3"></i> -->
               </a>
             </div>
             <div class="col-6 mb-2">
@@ -174,9 +217,10 @@
                 download
                 target="_blank"
                 class="d-block text-center text-decoration-none py-2 download_btn"
-                style="border: 1px #af18f9 solid; border-radius: 8px;"
+                style="border: 1px #af18f9 solid; border-radius: 8px"
               >
-                {{ $t("BUTTONS.cv") }} <i class="fal fa-file-pdf mx-3"></i>
+                {{ $t("BUTTONS.cv") }}
+                <!-- <i class="fal fa-file-pdf mx-3"></i> -->
               </a>
             </div>
           </div>
@@ -187,19 +231,14 @@
             :placeholder="$t('PLACEHOLDERS.status')"
             v-model.trim="data.account_status"
           /> -->
-          
+
           <!-- Start:: Video Upload Input -->
           <div class="d-flex justify-center gap-3 flex-wrap">
             <div v-if="data.image.path">
-            <!-- Display image -->
-            <div class="preview-container text-center my-3">
-              <h6 style="color: #af18f9;">{{ $t("PLACEHOLDERS.video") }}</h6>
-              <video
-                :src="data.video?.path"
-                controls
-                autoplay
-                loop
-              ></video>
+              <!-- Display image -->
+              <div class="preview-container text-center my-3">
+                <h6 style="color: #af18f9">{{ $t("PLACEHOLDERS.video") }}</h6>
+                <video :src="data.video?.path" controls autoplay loop></video>
               </div>
             </div>
           </div>
@@ -279,6 +318,7 @@ export default {
           path: null,
           file: null,
         },
+        subjects: [],
         email: null,
         teacher_name: null,
         iso_code: null,
@@ -404,6 +444,7 @@ export default {
           current_job: teacher.user.details.current_job,
           gender: teacher.user.details.gender,
           age: teacher.user.details.age,
+          subjects: teacher.user?.subjects,
         };
       } catch (error) {
         console.error("Error fetching teacher data:", error);

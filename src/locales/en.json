@@ -1172,6 +1172,7 @@
     "save": "Save",
     "terms": "Terms And Conditions",
     "show": "Show",
+    "click_to_view": "Click to View",
     "working_hours": "Working Hours",
     "edit": "Edit",
     "delete": "Delete",
@@ -1260,6 +1261,8 @@
   },
 
   "PLACEHOLDERS": {
+    "subject_name": "Subject",
+    "subjects_name": "Subjects",
     "personal_data": "Personal Data",
     "professional_data": "Professional Data",
     "educational": "Academic Qualification",

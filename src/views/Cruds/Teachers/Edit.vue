@@ -114,7 +114,7 @@
             :multiple="true"
             required
           />
-          <hr class="my-5" style="width: 99%" />
+          <hr class="my-5" style="width: 97%" />
           <h5 style="color: #af18f9; font-weight: 800">
             {{ $t("PLACEHOLDERS.professional_data") }}
           </h5>
@@ -146,6 +146,138 @@
             v-model.trim="data.current_job"
             required
           />
+          <div>
+            <h6 style="color: #af18f9" class="mb-5">
+              {{ $t("PLACEHOLDERS.foundation") }}
+              <span class="text-danger">*</span>
+            </h6>
+            <label class="mx-5" style="cursor: pointer; font-size: 16px">
+              <input
+                class="mx-1"
+                style="cursor: pointer"
+                type="radio"
+                name="foundation"
+                v-model="data.foundation"
+                value="schools"
+                @input="getSubjects('schools')"
+              />
+              {{ $t("PLACEHOLDERS.schools") }}
+            </label>
+            <label class="mx-5" style="cursor: pointer; font-size: 16px">
+              <input
+                class="mx-1"
+                style="cursor: pointer"
+                type="radio"
+                name="foundation"
+                v-model="data.foundation"
+                value="universities"
+                @input="getSubjects('universities')"
+              />
+              {{ $t("PLACEHOLDERS.universities") }}
+            </label>
+          </div>
+          <div
+            v-if="data.foundation == 'universities'"
+            class="row justify-content-center"
+          >
+            <div
+              class="col-12"
+              v-for="(item, index) in data.university_fields"
+              :key="'l' + index"
+            >
+              <div class="row">
+                <base-select-input
+                  v-if="data.foundation == 'universities'"
+                  col="4"
+                  :optionsList="getFilteredSpecializations(specializations)"
+                  :placeholder="$t('PLACEHOLDERS.specialization')"
+                  v-model.trim="item.specialization"
+                />
+
+                <base-select-input
+                  v-if="data.foundation == 'universities'"
+                  col="4"
+                  :optionsList="subjects"
+                  :placeholder="$t('PLACEHOLDERS.subjects_name')"
+                  v-model.trim="item.subject"
+                  multiple
+                />
+                <div class="item d-flex flex-wrap align-items-center col-4">
+                  <div
+                    class="all_actions"
+                    v-if="data.university_fields?.length > 1"
+                  >
+                    <span
+                      class="add_another text-2xl cursor-pointer"
+                      @click="removeUniversityRow(index)"
+                    >
+                      <i class="fas fa-minus-circle"></i>
+                    </span>
+                  </div>
+                  <div class="col-l2">
+                    <div
+                      class="add_another text-2xl cursor-pointer mx-2"
+                      @click="addUniversityRow"
+                    >
+                      <i class="fas fa-plus-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="row justify-content-center"
+            v-if="data.foundation == 'schools'"
+          >
+            <div
+              class="col-12"
+              v-for="(item, index) in data.fields"
+              :key="'l' + index"
+            >
+              <div class="row">
+                <base-select-input
+                  col="3"
+                  :optionsList="getFilteredStages(index)"
+                  :placeholder="$t('PLACEHOLDERS.academic_stage')"
+                  v-model.trim="item.academic_stage"
+                  @input="getAcademicYears(item?.academic_stage?.id, index)"
+                />
+                <base-select-input
+                  col="3"
+                  :disabled="!item.academic_stage"
+                  :optionsList="item.academic_years || []"
+                  :placeholder="$t('PLACEHOLDERS.academic_year')"
+                  v-model.trim="item.academic_year"
+                />
+                <base-select-input
+                  col="3"
+                  :optionsList="subjects"
+                  :placeholder="$t('PLACEHOLDERS.subjects_name')"
+                  v-model.trim="item.subject"
+                  multiple
+                />
+                <div class="item d-flex flex-wrap align-items-center col-3">
+                  <div class="all_actions" v-if="data.fields?.length > 1">
+                    <span
+                      class="add_another text-2xl cursor-pointer"
+                      @click="removeRow(index)"
+                    >
+                      <i class="fas fa-minus-circle"></i>
+                    </span>
+                  </div>
+                  <div class="col-l2">
+                    <div
+                      class="add_another text-2xl cursor-pointer mx-2"
+                      @click="addRow"
+                    >
+                      <i class="fas fa-plus-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <BaseNamePreviewFileUploadInput
             col="6"
             identifier="educational-upload"
@@ -172,7 +304,7 @@
             :placeholder="$t('PLACEHOLDERS.status')"
             v-model.trim="data.account_status"
           /> -->
-          
+
           <!-- Start:: Video Upload Input -->
           <base-image-upload-input
             col="12"
@@ -215,6 +347,14 @@ export default {
     BaseNamePreviewFileUploadInput,
   },
   computed: {
+    usedAcademicStageIds() {
+      return this.data.fields.map((f) => f.academic_stage?.id)?.filter(Boolean); // Remove undefined/null
+    },
+    usedSpecializationsIds() {
+      return this.data.university_fields
+        .map((f) => f.specialization?.id)
+        ?.filter(Boolean); // Remove undefined/null
+    },
     activeStatuses() {
       return [
         {
@@ -271,6 +411,30 @@ export default {
           path: null,
           file: null,
         },
+        educational: {
+          path: null,
+          file: null,
+          name: null,
+        },
+        cv: {
+          path: null,
+          file: null,
+          name: null,
+        },
+        fields: [
+          {
+            academic_stage: null,
+            academic_year: null,
+            subject: null,
+            academic_years: [],
+          },
+        ],
+        university_fields: [
+          {
+            specialization: null,
+            subject: null,
+          },
+        ],
         email: null,
         teacher_name: null,
         iso_code: null,
@@ -303,6 +467,95 @@ export default {
   },
 
   methods: {
+    getFilteredStages(currentIndex) {
+      const currentId = this.data.fields[currentIndex]?.academic_stage?.id;
+
+      const usedIds = this.data.fields
+        .map((f, i) => (i !== currentIndex ? f.academic_stage?.id : null))
+        ?.filter(Boolean);
+
+      return this.academic_stages?.filter(
+        (stage) => !usedIds.includes(stage.id) || stage.id === currentId
+      );
+    },
+    getFilteredSpecializations(currentIndex) {
+      const currentId =
+        this.data.university_fields[currentIndex]?.specialization?.id;
+
+      const usedIds = this.data.university_fields
+        .map((f, i) => (i !== currentIndex ? f.specialization?.id : null))
+        ?.filter(Boolean);
+
+      return this.specializations?.filter(
+        (stage) => !usedIds.includes(stage.id) || stage.id === currentId
+      );
+    },
+    addRow() {
+      this.data?.fields?.push({
+        academic_stage: null,
+        academic_year: null,
+        subject: null,
+        academic_years: [],
+      });
+    },
+    removeRow(index) {
+      this.data?.fields.splice(index, 1);
+    },
+    addUniversityRow() {
+      this.data?.university_fields?.push({
+        specialization: null,
+        subject: null,
+      });
+    },
+    removeUniversityRow(index) {
+      this.data?.university_fields.splice(index, 1);
+    },
+    async getSubjects(foundation) {
+      try {
+        let res = await this.$axios({
+          method: "GET",
+          url: `study-subject?limit=0&page=0&status=1&foundation=${foundation}`,
+        });
+        this.subjects = res.data.data;
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    },
+    async getSpecializations() {
+      try {
+        let res = await this.$axios({
+          method: "GET",
+          url: "specialization?page=0&limit=0&status=1",
+        });
+        this.specializations = res.data.data;
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    },
+    async getAcademicStages() {
+      try {
+        let res = await this.$axios({
+          method: "GET",
+          url: "academic-stages?page=0&limit=0&status=1",
+        });
+        this.academic_stages = res.data.data;
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    },
+    async getAcademicYears(academic_stage, index) {
+      // this.data.fields[index].academic_year = null;
+      this.data.fields[index].academic_years = [];
+      try {
+        let res = await this.$axios({
+          method: "GET",
+          url: `academic-years?page=0&limit=0&status=1&academicStages[]=${academic_stage}`,
+        });
+        this.data.fields[index].academic_years = res.data.data;
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    },
     dialCode(dialCode) {
       this.data.dial_code = dialCode;
     },
@@ -430,8 +683,51 @@ export default {
       if (this.data.cv?.file) {
         REQUEST_DATA.append("cv", this.data.cv?.file?.file);
       }
+      if (this.data?.foundation) {
+        REQUEST_DATA.append("foundation_type", this.data.foundation);
+      }
       if (this.data.video?.file) {
         REQUEST_DATA.append("video", this.data.video?.file);
+      }
+      if (this.data.foundation === "universities") {
+        this.data.university_fields?.forEach((field) => {
+          if (field.specialization?.id) {
+            if (field.subject?.length > 0) {
+              field.subject?.forEach((sub) => {
+                REQUEST_DATA.append(
+                  `specializations[${field.specialization?.id}][]`,
+                  sub?.id
+                );
+              });
+            }
+            // else {
+            //   REQUEST_DATA.append(
+            //     `specializations[${field.specialization?.id}][]`,
+            //     null
+            //   );
+            // }
+          }
+        });
+      }
+      if (this.data.foundation === "schools") {
+        this.data.fields?.forEach((field) => {
+          if (field.academic_stage?.id) {
+            if (field.subject?.length > 0) {
+              field.subject.forEach((sub) => {
+                REQUEST_DATA.append(
+                  `academic_stages[${field.academic_stage?.id}][${field.academic_year?.id}]`,
+                  sub?.id
+                );
+              });
+            }
+            // else {
+            //   REQUEST_DATA.append(
+            //     `academic_stages[${field.academic_stage?.id}][${field.academic_year?.id}]`,
+            //     null
+            //   );
+            // }
+          }
+        });
       }
       // if (this.data.account_status) {
       //   REQUEST_DATA.append("account_status", this.data.account_status?.value);
@@ -456,6 +752,7 @@ export default {
     // End:: Submit Form
 
     async getData() {
+        this.getSubjects(this.$route?.query?.f == 's' ? "schools" : "universities");
       try {
         let response = await this.$axios.get(
           `/teachers/${this.$route.params?.id}`
@@ -488,6 +785,17 @@ export default {
           current_job: teacher.user.details.current_job,
           gender: teacher.user.details.gender,
           age: teacher.user.details.age,
+          foundation: this.$route?.query?.f == 's' ? "schools" : "universities",
+          fields: teacher.user?.subjects?.map((subject) => ({
+            academic_stage: subject.academic_stage?.data,
+            academic_year: subject.academic_year?.data,
+            subject: [{ id: subject?.id, name: subject?.name }],
+            academic_years: [],
+          })),
+          university_fields: teacher.user?.subjects?.map((subject) => ({
+            specialization: subject.specialization?.data,
+            subject: subject,
+          })),
         };
       } catch (error) {
         console.error("Error fetching teacher data:", error);
@@ -496,6 +804,8 @@ export default {
   },
 
   async created() {
+    this.getSpecializations();
+    this.getAcademicStages();
     this.getSpokenLanguages();
     this.getCountries();
     this.getData();
