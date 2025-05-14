@@ -189,7 +189,7 @@
                 <base-select-input
                   v-if="data.foundation == 'universities'"
                   col="4"
-                  :optionsList="getFilteredSpecializations(specializations)"
+                  :optionsList="getFilteredSpecializations(index)"
                   :placeholder="$t('PLACEHOLDERS.specialization')"
                   v-model.trim="item.specialization"
                 />
@@ -298,13 +298,6 @@
             @selectFile="handleCVSelection"
           />
 
-          <!-- <base-select-input
-            col="6"
-            :optionsList="activeStatuses"
-            :placeholder="$t('PLACEHOLDERS.status')"
-            v-model.trim="data.account_status"
-          /> -->
-
           <!-- Start:: Video Upload Input -->
           <base-image-upload-input
             col="12"
@@ -341,7 +334,7 @@ import BasePhoneInput from "@/components/formInputs/BasePhoneInput.vue";
 import BaseNamePreviewFileUploadInput from "@/components/formInputs/BaseNamePreviewFileUploadInput.vue";
 
 export default {
-  name: "CreateTeacher",
+  name: "EditTeacher",
   components: {
     BasePhoneInput,
     BaseNamePreviewFileUploadInput,
@@ -402,6 +395,7 @@ export default {
   data() {
     return {
       isWaitingRequest: false,
+      key: 0, // Added to force re-render phone input
       data: {
         image: {
           path: null,
@@ -445,24 +439,18 @@ export default {
         gender: null,
         id_number: null,
         spoken_languages: [],
-        educational: {
-          path: null,
-          file: null,
-          name: null,
-        },
-        cv: {
-          path: null,
-          file: null,
-          name: null,
-        },
         about: null,
         expertise_area: null,
         number_year_experience: null,
         current_job: null,
         active: true,
+        foundation: null,
       },
       countries: [],
       spoken_languages: [],
+      subjects: [],
+      academic_stages: [],
+      specializations: [],
     };
   },
 
@@ -478,16 +466,15 @@ export default {
         (stage) => !usedIds.includes(stage.id) || stage.id === currentId
       );
     },
-    getFilteredSpecializations(currentIndex) {
-      const currentId =
-        this.data.university_fields[currentIndex]?.specialization?.id;
+    getFilteredSpecializations(index) {
+      const currentId = this.data.university_fields[index]?.specialization?.id;
 
       const usedIds = this.data.university_fields
-        .map((f, i) => (i !== currentIndex ? f.specialization?.id : null))
+        .map((f, i) => (i !== index ? f.specialization?.id : null))
         ?.filter(Boolean);
 
       return this.specializations?.filter(
-        (stage) => !usedIds.includes(stage.id) || stage.id === currentId
+        (spec) => !usedIds.includes(spec.id) || spec.id === currentId
       );
     },
     addRow() {
@@ -518,7 +505,7 @@ export default {
         });
         this.subjects = res.data.data;
       } catch (error) {
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message || "Error fetching subjects");
       }
     },
     async getSpecializations() {
@@ -529,7 +516,7 @@ export default {
         });
         this.specializations = res.data.data;
       } catch (error) {
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message || "Error fetching specializations");
       }
     },
     async getAcademicStages() {
@@ -540,11 +527,10 @@ export default {
         });
         this.academic_stages = res.data.data;
       } catch (error) {
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message || "Error fetching academic stages");
       }
     },
     async getAcademicYears(academic_stage, index) {
-      // this.data.fields[index].academic_year = null;
       this.data.fields[index].academic_years = [];
       try {
         let res = await this.$axios({
@@ -553,7 +539,7 @@ export default {
         });
         this.data.fields[index].academic_years = res.data.data;
       } catch (error) {
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message || "Error fetching academic years");
       }
     },
     dialCode(dialCode) {
@@ -573,35 +559,28 @@ export default {
     },
     // End:: Select Upload video
     async getCountries() {
-      // this.loading = true;
       try {
         let res = await this.$axios({
           method: "GET",
           url: `countries?ignore_permission=true&page=0&limit=0`,
         });
-
         this.countries = res.data.data;
       } catch (error) {
-        this.loading = false;
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message || "Error fetching countries");
       }
     },
     async getSpokenLanguages() {
-      // this.loading = true;
       try {
         let res = await this.$axios({
           method: "GET",
           url: `spoken-languages?ignore_permission=true&page=0&limit=0`,
         });
-
         this.spoken_languages = res.data.data;
       } catch (error) {
-        this.loading = false;
-        console.log(error.response.data.message);
+        console.log(error.response?.data?.message || "Error fetching languages");
       }
     },
     handleFileSelection(file) {
-      console.log("fileee", file);
       this.data.educational = {
         file: file,
         name: file.name,
@@ -689,49 +668,34 @@ export default {
       if (this.data.video?.file) {
         REQUEST_DATA.append("video", this.data.video?.file);
       }
+
+      // Process universities data with merged subjects
       if (this.data.foundation === "universities") {
         this.data.university_fields?.forEach((field) => {
-          if (field.specialization?.id) {
-            if (field.subject?.length > 0) {
-              field.subject?.forEach((sub) => {
-                REQUEST_DATA.append(
-                  `specializations[${field.specialization?.id}][]`,
-                  sub?.id
-                );
-              });
-            }
-            // else {
-            //   REQUEST_DATA.append(
-            //     `specializations[${field.specialization?.id}][]`,
-            //     null
-            //   );
-            // }
+          if (field.specialization?.id && field.subject?.length > 0) {
+            field.subject?.forEach((sub) => {
+              REQUEST_DATA.append(
+                `specializations[${field.specialization?.id}][]`,
+                sub?.id
+              );
+            });
           }
         });
       }
+
+      // Process schools data with merged subjects
       if (this.data.foundation === "schools") {
         this.data.fields?.forEach((field) => {
-          if (field.academic_stage?.id) {
-            if (field.subject?.length > 0) {
-              field.subject.forEach((sub) => {
-                REQUEST_DATA.append(
-                  `academic_stages[${field.academic_stage?.id}][${field.academic_year?.id}]`,
-                  sub?.id
-                );
-              });
-            }
-            // else {
-            //   REQUEST_DATA.append(
-            //     `academic_stages[${field.academic_stage?.id}][${field.academic_year?.id}]`,
-            //     null
-            //   );
-            // }
+          if (field.academic_stage?.id && field.academic_year?.id && field.subject?.length > 0) {
+            field.subject?.forEach((sub) => {
+              REQUEST_DATA.append(
+                `academic_stages[${field.academic_stage?.id}][${field.academic_year?.id}]`,
+                sub?.id
+              );
+            });
           }
         });
       }
-      // if (this.data.account_status) {
-      //   REQUEST_DATA.append("account_status", this.data.account_status?.value);
-      // }
 
       try {
         await this.$axios({
@@ -751,13 +715,74 @@ export default {
     },
     // End:: Submit Form
 
+    // Group subjects by specialization or academic_stage/year pair
+    groupSubjectsBySpecialization(subjects) {
+      const groupedData = {};
+      
+      subjects.forEach(subject => {
+        if (this.data.foundation === 'universities' && subject.specialization?.data) {
+          const specId = subject.specialization.data.id;
+          
+          if (!groupedData[specId]) {
+            groupedData[specId] = {
+              specialization: subject.specialization.data,
+              subjects: []
+            };
+          }
+          
+          groupedData[specId].subjects.push({
+            id: subject.id,
+            name: subject.name
+          });
+        }
+      });
+      
+      return Object.values(groupedData).map(group => ({
+        specialization: group.specialization,
+        subject: group.subjects
+      }));
+    },
+    
+    groupSubjectsByAcademicStage(subjects) {
+      const groupedData = {};
+      
+      subjects.forEach(subject => {
+        if (this.data.foundation === 'schools' && subject.academic_stage?.data && subject.academic_year?.data) {
+          const key = `${subject.academic_stage.data.id}_${subject.academic_year.data.id}`;
+          
+          if (!groupedData[key]) {
+            groupedData[key] = {
+              academic_stage: subject.academic_stage.data,
+              academic_year: subject.academic_year.data,
+              academic_years: [],
+              subjects: []
+            };
+          }
+          
+          groupedData[key].subjects.push({
+            id: subject.id,
+            name: subject.name
+          });
+        }
+      });
+      
+      return Object.values(groupedData).map(group => ({
+        academic_stage: group.academic_stage,
+        academic_year: group.academic_year,
+        academic_years: [],
+        subject: group.subjects
+      }));
+    },
+
     async getData() {
-        this.getSubjects(this.$route?.query?.f == 's' ? "schools" : "universities");
       try {
         let response = await this.$axios.get(
           `/teachers/${this.$route.params?.id}`
         );
         const teacher = response.data.data.teacher;
+        const foundation = this.$route?.query?.f == "s" ? "schools" : "universities";
+        
+        // Prepare base data
         this.data = {
           image: { path: teacher.image, file: null },
           video: { path: teacher.user?.details?.video, file: null },
@@ -785,33 +810,60 @@ export default {
           current_job: teacher.user.details.current_job,
           gender: teacher.user.details.gender,
           age: teacher.user.details.age,
-          foundation: this.$route?.query?.f == 's' ? "schools" : "universities",
-          fields: teacher.user?.subjects?.map((subject) => ({
-            academic_stage: subject.academic_stage?.data,
-            academic_year: subject.academic_year?.data,
-            subject: [{ id: subject?.id, name: subject?.name }],
-            academic_years: [],
-          })),
-          university_fields: teacher.user?.subjects?.map((subject) => ({
-            specialization: subject.specialization?.data,
-            subject: subject,
-          })),
+          foundation: foundation,
+          fields: [],
+          university_fields: []
         };
+
+        // Process subjects based on foundation type
+        if (foundation === 'universities') {
+          this.data.university_fields = this.groupSubjectsBySpecialization(teacher.user?.subjects || []);
+          // Add empty row if no data
+          if (this.data.university_fields.length === 0) {
+            this.data.university_fields = [{
+              specialization: null,
+              subject: null
+            }];
+          }
+        } else {
+          this.data.fields = this.groupSubjectsByAcademicStage(teacher.user?.subjects || []);
+          // Add empty row if no data
+          if (this.data.fields.length === 0) {
+            this.data.fields = [{
+              academic_stage: null,
+              academic_year: null,
+              subject: null,
+              academic_years: []
+            }];
+          } else {
+            // Get academic years for each stage
+            for (let i = 0; i < this.data.fields.length; i++) {
+              if (this.data.fields[i].academic_stage?.id) {
+                await this.getAcademicYears(this.data.fields[i].academic_stage.id, i);
+              }
+            }
+          }
+        }
+
+        // Force phone input to refresh
+        this.$nextTick(() => {
+          this.key++;
+        });
       } catch (error) {
         console.error("Error fetching teacher data:", error);
+        this.$message.error("Error loading teacher data");
       }
     },
   },
 
   async created() {
+    const foundation = this.$route?.query?.f == "s" ? "schools" : "universities";
+    this.getSubjects(foundation);
     this.getSpecializations();
     this.getAcademicStages();
     this.getSpokenLanguages();
     this.getCountries();
-    this.getData();
-    this.$nextTick(() => {
-      this.data.phone = "";
-    });
+    await this.getData();
   },
 };
 </script>
