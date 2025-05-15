@@ -497,9 +497,15 @@ export default {
           sortable: false,
           align: "center",
         },
+        // {
+        //   text: this.$t("PLACEHOLDERS.educational"),
+        //   value: "educational",
+        //   sortable: false,
+        //   align: "center",
+        // },
         {
-          text: this.$t("PLACEHOLDERS.educational"),
-          value: "educational",
+          text: this.$t("PLACEHOLDERS.foundation"),
+          value: "foundation_type_text",
           sortable: false,
           align: "center",
         },

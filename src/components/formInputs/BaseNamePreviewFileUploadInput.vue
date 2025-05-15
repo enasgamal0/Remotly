@@ -24,7 +24,6 @@
           :
           <!-- <i class="fal fa-file-pdf mx-3"></i> -->
            <span style="text-decoration: underline;">{{$t("BUTTONS.click_to_view")}}</span>
-           
         </a>
       </div>
       <div class="input_wrapper upload_file_text_preview top_label">

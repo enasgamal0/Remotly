@@ -156,72 +156,60 @@
             v-model.trim="data.current_job"
             disabled
           />
-          <div v-if="data?.subjects && data?.subjects[0]?.academic_stage" v-for="(subject, index) in data?.subjects" :key="index" class="row">
-            <base-input
-              col="4"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.subject_name')"
-              v-model.trim="subject.name"
-              disabled
-            />
-            <base-input
-              col="4"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.academic_stage')"
-              v-model.trim="subject.academic_stage.data.name"
-              disabled
-            />
-            <base-input
-              col="4"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.academic_year')"
-              v-model.trim="subject.academic_year.data.name"
-              disabled
-            />
+          <!-- Grouped by Academic Stage & Year -->
+          <div v-if="data.subjects && data.subjects[0]?.academic_stage">
+            <div
+              v-for="(group, index) in groupedSubjectsByAcademic"
+              :key="'academic' + index"
+              class="row"
+            >
+              <base-select-input
+                col="4"
+                :optionsList="[]"
+                :placeholder="$t('PLACEHOLDERS.subject_name')"
+                v-model.trim="group.subjects"
+                disabled
+                multiple
+              />
+              <base-input
+                col="4"
+                type="text"
+                :placeholder="$t('PLACEHOLDERS.academic_stage')"
+                :value="group.academic_stage"
+                disabled
+              />
+              <base-input
+                col="4"
+                type="text"
+                :placeholder="$t('PLACEHOLDERS.academic_year')"
+                :value="group.academic_year"
+                disabled
+              />
+            </div>
           </div>
 
-          <div v-if="data?.subjects && data?.subjects[0]?.specialization" v-for="(subject, index) in data?.subjects" :key="index" class="row">
-            <base-input
-              col="6"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.subject_name')"
-              v-model.trim="subject.name"
-              disabled
-            />
-            <base-input
-              col="6"
-              type="text"
-              :placeholder="$t('PLACEHOLDERS.specialization')"
-              v-model.trim="subject.specialization.data.name"
-              disabled
-            />
-          </div>
-          <div class="row m-auto mt-5" style="font-size: 16px">
-            <div class="col-6 mb-2">
-              <a
-                v-if="data.educational?.path"
-                :href="data.educational?.path"
-                download
-                target="_blank"
-                class="d-block text-center text-decoration-none py-2 download_btn"
-                style="border: 1px #af18f9 solid; border-radius: 8px"
-              >
-                {{ $t("BUTTONS.educational") }}
-                <!-- <i class="fal fa-file-pdf mx-3"></i> -->
-              </a>
-            </div>
-            <div class="col-6 mb-2">
-              <a
-                v-if="data.cv?.path"
-                :href="data.cv?.path"
-                download
-                target="_blank"
-                class="d-block text-center text-decoration-none py-2 download_btn"
-                style="border: 1px #af18f9 solid; border-radius: 8px"
-              >
-                {{ $t("BUTTONS.cv") }}
-                <!-- <i class="fal fa-file-pdf mx-3"></i> -->
-              </a>
+          <!-- Grouped by Specialization -->
+          <div v-if="data.subjects && data.subjects[0]?.specialization">
+            <div
+              v-for="(group, index) in groupedSubjectsBySpecialization"
+              :key="'specialization' + index"
+              class="row"
+            >
+              <base-select-input
+                col="4"
+                :optionsList="[]"
+                :placeholder="$t('PLACEHOLDERS.subject_name')"
+                v-model.trim="group.subjects"
+                disabled
+                multiple
+              />
+              <base-input
+                col="6"
+                type="text"
+                :placeholder="$t('PLACEHOLDERS.specialization')"
+                :value="group.specialization"
+                disabled
+              />
             </div>
           </div>
 
@@ -262,6 +250,47 @@ export default {
     BaseNamePreviewFileUploadInput,
   },
   computed: {
+    groupedSubjectsByAcademic() {
+      if (!this.data.subjects) return [];
+
+      const grouped = {};
+
+      this.data.subjects.forEach((subject) => {
+        const academicStage = subject.academic_stage?.data?.name || "";
+        const academicYear = subject.academic_year?.data?.name || "";
+        const key = `${academicStage}__${academicYear}`;
+
+        if (!grouped[key]) {
+          grouped[key] = {
+            academic_stage: academicStage,
+            academic_year: academicYear,
+            subjects: [],
+          };
+        }
+        grouped[key].subjects.push(subject);
+      });
+
+      return Object.values(grouped);
+    },
+
+    groupedSubjectsBySpecialization() {
+      if (!this.data.subjects) return [];
+
+      const grouped = {};
+
+      this.data.subjects.forEach((subject) => {
+        const specialization = subject.specialization?.data?.name || "";
+        if (!grouped[specialization]) {
+          grouped[specialization] = {
+            specialization,
+            subjects: [],
+          };
+        }
+        grouped[specialization].subjects.push(subject);
+      });
+
+      return Object.values(grouped);
+    },
     activeStatuses() {
       return [
         {

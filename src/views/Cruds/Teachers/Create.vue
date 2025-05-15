@@ -178,7 +178,6 @@
                 name="foundation"
                 v-model="data.foundation"
                 value="schools"
-                @input="getSubjects('schools')"
               />
               {{ $t("PLACEHOLDERS.schools") }}
             </label>
@@ -190,7 +189,6 @@
                 name="foundation"
                 v-model="data.foundation"
                 value="universities"
-                @input="getSubjects('universities')"
               />
               {{ $t("PLACEHOLDERS.universities") }}
             </label>
@@ -211,15 +209,26 @@
                   :optionsList="getFilteredSpecializations(specializations)"
                   :placeholder="$t('PLACEHOLDERS.specialization')"
                   v-model.trim="item.specialization"
+                  @input="
+                    getSubjects(
+                      'universities',
+                      item.specialization?.id,
+                      null,
+                      null,
+                      index
+                    ),
+                      (item.subject = [])
+                  "
+                  required
                 />
-
                 <base-select-input
                   v-if="data.foundation == 'universities'"
                   col="4"
-                  :optionsList="subjects"
+                  :optionsList="item.subjects || []"
                   :placeholder="$t('PLACEHOLDERS.subjects_name')"
                   v-model.trim="item.subject"
                   multiple
+                  required
                 />
                 <div class="item d-flex flex-wrap align-items-center col-4">
                   <div
@@ -260,21 +269,38 @@
                   :optionsList="getFilteredStages(index)"
                   :placeholder="$t('PLACEHOLDERS.academic_stage')"
                   v-model.trim="item.academic_stage"
-                  @input="getAcademicYears(item?.academic_stage?.id, index)"
+                  @input="
+                    getAcademicYears(item?.academic_stage?.id, index),
+                      (item.academic_years = []),
+                      (item.academic_year = null),
+                      (item.subject = [])
+                  "
+                  required
                 />
                 <base-select-input
                   col="3"
-                  :disabled="!item.academic_stage"
                   :optionsList="item.academic_years || []"
                   :placeholder="$t('PLACEHOLDERS.academic_year')"
                   v-model.trim="item.academic_year"
+                  @input="
+                    getSubjects(
+                      'schools',
+                      null,
+                      item?.academic_stage?.id,
+                      item?.academic_year?.id,
+                      index
+                    ),
+                    (item.subject = [])
+                  "
+                  required
                 />
                 <base-select-input
                   col="3"
-                  :optionsList="subjects"
+                  :optionsList="item.subjects || []"
                   :placeholder="$t('PLACEHOLDERS.subjects_name')"
                   v-model.trim="item.subject"
                   multiple
+                  required
                 />
                 <div class="item d-flex flex-wrap align-items-center col-3">
                   <div class="all_actions" v-if="data.fields?.length > 1">
@@ -365,12 +391,12 @@ export default {
   },
   computed: {
     usedAcademicStageIds() {
-      return this.data.fields.map((f) => f.academic_stage?.id)?.filter(Boolean); // Remove undefined/null
+      return this.data.fields.map((f) => f.academic_stage?.id)?.filter(Boolean);
     },
     usedSpecializationsIds() {
       return this.data.university_fields
         .map((f) => f.specialization?.id)
-        ?.filter(Boolean); // Remove undefined/null
+        ?.filter(Boolean);
     },
     activeStatuses() {
       return [
@@ -447,12 +473,14 @@ export default {
             academic_year: null,
             subject: null,
             academic_years: [],
+            subjects: [],
           },
         ],
         university_fields: [
           {
             specialization: null,
             subject: null,
+            subjects: [],
           },
         ],
         foundation: null,
@@ -512,6 +540,7 @@ export default {
         academic_year: null,
         subject: null,
         academic_years: [],
+        subjects: [],
       });
     },
     removeRow(index) {
@@ -521,18 +550,39 @@ export default {
       this.data?.university_fields?.push({
         specialization: null,
         subject: null,
+        subjects: [],
       });
     },
     removeUniversityRow(index) {
       this.data?.university_fields.splice(index, 1);
     },
-    async getSubjects(foundation) {
+    async getSubjects(
+      foundation,
+      specialization_id,
+      academic_stage_id,
+      academic_year_id,
+      index
+    ) {
+      const data = {
+        foundation,
+      };
+
+      if (specialization_id) data.specialization_id = specialization_id;
+      if (academic_stage_id) data.academic_stage_id = academic_stage_id;
+      if (academic_year_id) data.academic_year_id = academic_year_id;
+
       try {
         let res = await this.$axios({
-          method: "GET",
-          url: `study-subject?limit=0&page=0&status=1&foundation=${foundation}`,
+          method: "POST",
+          url: `study-subjects/by-data`,
+          data,
         });
-        this.subjects = res.data.data;
+        if (foundation == "schools") {
+          // this.data.fields[index].subjects = res.data.data;
+          this.data.fields[index].subjects = res.data.data;
+        } else {
+          this.data.university_fields[index].subjects = res.data.data;
+        }
       } catch (error) {
         console.log(error.response.data.message);
       }
@@ -749,7 +799,7 @@ export default {
             if (field.subject?.length > 0) {
               field.subject.forEach((sub) => {
                 REQUEST_DATA.append(
-                  `academic_stages[${field.academic_stage?.id}][${field.academic_year?.id}]`,
+                  `academic_stages[${field.academic_stage?.id}][${field.academic_year?.id}][]`,
                   sub?.id
                 );
               });
@@ -783,7 +833,6 @@ export default {
         );
       }
     },
-
     // End:: Submit Form
   },
   created() {

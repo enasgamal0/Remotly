@@ -61,7 +61,8 @@
             $can('roles index', 'roles') ||
             $can('permissions-index', 'permissions') ||
             $can('admins-index', 'admins') ||
-            $can('admins index', 'admins')
+            $can('admins index', 'admins') ||
+            $can('users index', 'users')
           "
         >
           <a-sub-menu
@@ -1332,7 +1333,7 @@ export default {
           key: "dashboard",
           title: this.$t("SIDENAV.control_admins"),
           icon: require("@/assets/media/icons/ui_icons/panel.png"),
-          hasPermission: this.$can("roles index", "roles"),
+          hasPermission: this.$can("roles index", "roles") || this.$can("users index", "users"),
           children: [
             {
               key: "roles",
