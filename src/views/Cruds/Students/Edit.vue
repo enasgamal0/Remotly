@@ -82,7 +82,6 @@
             type="password"
             :placeholder="$t('PLACEHOLDERS.confirmPassword')"
             v-model.trim="data.passwordConfirmation"
-            required
           />
           <!-- End:: Confirm Password Input -->
           <!-- Start:: Gender Selection -->
@@ -417,11 +416,16 @@ export default {
         this.data.email = res.data.data?.client_details?.email;
         this.data.image.path = res.data.data?.client_details?.image;
         this.data.gender = res.data.data?.client_details?.user?.details?.gender;
-        this.data.foundation = res.data.data?.client_details?.user?.details?.foundation_type;
-        this.data.foundation_name = res.data.data?.client_details?.user?.details?.foundation_name;
-        this.data.specialization = res.data.data?.client_details?.user?.details?.specializations;
-        this.data.academic_stage = res.data.data?.client_details?.user?.details?.academic_stage;
-        this.data.academic_year = res.data.data?.client_details?.user?.details?.academic_year;
+        this.data.foundation =
+          res.data.data?.client_details?.user?.details?.foundation_type;
+        this.data.foundation_name =
+          res.data.data?.client_details?.user?.details?.foundation_name;
+        this.data.specialization =
+          res.data.data?.client_details?.user?.details?.specializations;
+        this.data.academic_stage =
+          res.data.data?.client_details?.user?.details?.academic_stage;
+        this.data.academic_year =
+          res.data.data?.client_details?.user?.details?.academic_year;
         // End:: Set Data
       } catch (error) {
         console.log(error.response.data.message);

@@ -63,6 +63,23 @@
             v-model.trim="data.age"
             required
           />
+          <!-- Start:: Password Input -->
+          <base-input
+            col="6"
+            type="password"
+            :placeholder="$t('PLACEHOLDERS.password')"
+            v-model.trim="data.password"
+          />
+          <!-- End:: Password Input -->
+
+          <!-- Start:: Confirm Password Input -->
+          <base-input
+            col="6"
+            type="password"
+            :placeholder="$t('PLACEHOLDERS.confirmPassword')"
+            v-model.trim="data.passwordConfirmation"
+          />
+          <!-- End:: Confirm Password Input -->
           <!-- Start:: Gender Selection -->
           <div class="gender-options my-5">
             <label
@@ -202,6 +219,7 @@
                     ),
                       (item.subject = [])
                   "
+                  required
                 />
 
                 <base-select-input
@@ -211,6 +229,7 @@
                   :placeholder="$t('PLACEHOLDERS.subjects_name')"
                   v-model.trim="item.subject"
                   multiple
+                  required
                 />
                 <div class="item d-flex flex-wrap align-items-center col-4">
                   <div
@@ -257,6 +276,7 @@
                       (item.academic_year = null),
                       (item.subject = [])
                   "
+                  required
                 />
                 <base-select-input
                   col="3"
@@ -274,6 +294,7 @@
                     ),
                       (item.subject = [])
                   "
+                  required
                 />
                 <base-select-input
                   col="3"
@@ -281,6 +302,7 @@
                   :placeholder="$t('PLACEHOLDERS.subjects_name')"
                   v-model.trim="item.subject"
                   multiple
+                  required
                 />
                 <div class="item d-flex flex-wrap align-items-center col-3">
                   <div class="all_actions" v-if="data.fields?.length > 1">
@@ -457,6 +479,8 @@ export default {
           },
         ],
         email: null,
+        password: null,
+        passwordConfirmation: null,
         teacher_name: null,
         iso_code: null,
         dial_code: null,
@@ -681,6 +705,16 @@ export default {
       if (this.data.phone) {
         REQUEST_DATA.append("mobile", this.data.phone);
       }
+      if (this.data.password) {
+        REQUEST_DATA.append("password", this.data.password);
+      }
+
+      if (this.data.passwordConfirmation) {
+        REQUEST_DATA.append(
+          "password_confirmation",
+          this.data.passwordConfirmation
+        );
+      }
       if (this.data.age) {
         REQUEST_DATA.append("age", this.data.age);
       }
@@ -853,128 +887,135 @@ export default {
     },
 
     async getData() {
-  try {
-    let response = await this.$axios.get(
-      `/teachers/${this.$route.params?.id}`
-    );
-    const teacher = response.data.data.teacher;
-    const foundation =
-      this.$route?.query?.f == "s" ? "schools" : "universities";
+      try {
+        let response = await this.$axios.get(
+          `/teachers/${this.$route.params?.id}`
+        );
+        const teacher = response.data.data.teacher;
+        const foundation =
+          this.$route?.query?.f == "s" ? "schools" : "universities";
 
-    // Prepare base data
-    this.data = {
-      image: { path: teacher.image, file: null },
-      video: { path: teacher.user?.details?.video, file: null },
-      educational: {
-        path: teacher.user.details.educational,
-        file: null,
-        name: teacher.user.details.educational?.split("/").pop() || null,
-      },
-      cv: {
-        path: teacher.user.details.cv,
-        file: null,
-        name: teacher.user.details.cv?.split("/").pop() || null,
-      },
-      dial_code: teacher.country_code,
-      iso_code: teacher.iso_code,
-      phone: teacher.mobile,
-      email: teacher.email,
-      teacher_name: teacher.name,
-      country: teacher.user.details.country || null,
-      spoken_languages: teacher.user.details.spoken_languages,
-      id_number: teacher.user.details.id_number,
-      about: teacher.user.details.about,
-      expertise_area: teacher.user.details.expertise_area,
-      number_year_experience: teacher.user.details.number_year_experience,
-      current_job: teacher.user.details.current_job,
-      gender: teacher.user.details.gender,
-      age: teacher.user.details.age,
-      foundation: foundation,
-      fields: [],
-      university_fields: [],
-    };
-    console.log("Teacher data loaded", this.data);
-
-    // Process subjects based on foundation type
-    if (foundation === "universities") {
-      this.data.university_fields = this.groupSubjectsBySpecialization(
-        teacher.user?.subjects || []
-      );
-      // Add empty row if no data
-      if (this.data.university_fields.length === 0) {
-        this.data.university_fields = [
-          {
-            specialization: null,
-            subject: null,
-            subjects: [],
+        // Prepare base data
+        this.data = {
+          image: { path: teacher.image, file: null },
+          video: { path: teacher.user?.details?.video, file: null },
+          educational: {
+            path: teacher.user.details.educational,
+            file: null,
+            name: teacher.user.details.educational?.split("/").pop() || null,
           },
-        ];
-      } else {
-        // Always get subjects for each specialization
-        for (let i = 0; i < this.data.university_fields.length; i++) {
-          if (this.data.university_fields[i].specialization?.id) {
-            console.log("Getting subjects for specialization", this.data.university_fields[i].specialization.id);
-            
-            // This API call is crucial - it populates the 'subjects' array
-            await this.getSubjects(
-              foundation,
-              this.data.university_fields[i].specialization.id,
-              null,
-              null,
-              i
-            );
+          cv: {
+            path: teacher.user.details.cv,
+            file: null,
+            name: teacher.user.details.cv?.split("/").pop() || null,
+          },
+          dial_code: teacher.country_code,
+          iso_code: teacher.iso_code,
+          phone: teacher.mobile,
+          email: teacher.email,
+          teacher_name: teacher.name,
+          country: teacher.user.details.country || null,
+          spoken_languages: teacher.user.details.spoken_languages,
+          id_number: teacher.user.details.id_number,
+          about: teacher.user.details.about,
+          expertise_area: teacher.user.details.expertise_area,
+          number_year_experience: teacher.user.details.number_year_experience,
+          current_job: teacher.user.details.current_job,
+          gender: teacher.user.details.gender,
+          age: teacher.user.details.age,
+          foundation: foundation,
+          fields: [],
+          university_fields: [],
+        };
+        console.log("Teacher data loaded", this.data);
+
+        // Process subjects based on foundation type
+        if (foundation === "universities") {
+          this.data.university_fields = this.groupSubjectsBySpecialization(
+            teacher.user?.subjects || []
+          );
+          // Add empty row if no data
+          if (this.data.university_fields.length === 0) {
+            this.data.university_fields = [
+              {
+                specialization: null,
+                subject: null,
+                subjects: [],
+              },
+            ];
+          } else {
+            // Always get subjects for each specialization
+            for (let i = 0; i < this.data.university_fields.length; i++) {
+              if (this.data.university_fields[i].specialization?.id) {
+                console.log(
+                  "Getting subjects for specialization",
+                  this.data.university_fields[i].specialization.id
+                );
+
+                // This API call is crucial - it populates the 'subjects' array
+                await this.getSubjects(
+                  foundation,
+                  this.data.university_fields[i].specialization.id,
+                  null,
+                  null,
+                  i
+                );
+              }
+            }
           }
-        }
-      }
-    } else {
-      this.data.fields = this.groupSubjectsByAcademicStage(
-        teacher.user?.subjects || []
-      );
-      // Add empty row if no data
-      if (this.data.fields.length === 0) {
-        this.data.fields = [
-          {
-            academic_stage: null,
-            academic_year: null,
-            subject: null,
-            academic_years: [],
-            subjects: [],
-          },
-        ];
-      } else {
-        // Get academic years for each stage
-        for (let i = 0; i < this.data.fields.length; i++) {
-          if (this.data.fields[i].academic_stage?.id) {
-            await this.getAcademicYears(
-              this.data.fields[i].academic_stage.id,
-              i
-            );
-            
-            // Get subjects if academic_year is already selected
-            if (this.data.fields[i].academic_year?.id) {
-              console.log("Getting subjects for academic stage/year", this.data.fields[i].academic_stage.id, this.data.fields[i].academic_year.id);
-              await this.getSubjects(
-                foundation,
-                null,
-                this.data.fields[i].academic_stage.id,
-                this.data.fields[i].academic_year.id,
-                i
-              );
+        } else {
+          this.data.fields = this.groupSubjectsByAcademicStage(
+            teacher.user?.subjects || []
+          );
+          // Add empty row if no data
+          if (this.data.fields.length === 0) {
+            this.data.fields = [
+              {
+                academic_stage: null,
+                academic_year: null,
+                subject: null,
+                academic_years: [],
+                subjects: [],
+              },
+            ];
+          } else {
+            // Get academic years for each stage
+            for (let i = 0; i < this.data.fields.length; i++) {
+              if (this.data.fields[i].academic_stage?.id) {
+                await this.getAcademicYears(
+                  this.data.fields[i].academic_stage.id,
+                  i
+                );
+
+                // Get subjects if academic_year is already selected
+                if (this.data.fields[i].academic_year?.id) {
+                  console.log(
+                    "Getting subjects for academic stage/year",
+                    this.data.fields[i].academic_stage.id,
+                    this.data.fields[i].academic_year.id
+                  );
+                  await this.getSubjects(
+                    foundation,
+                    null,
+                    this.data.fields[i].academic_stage.id,
+                    this.data.fields[i].academic_year.id,
+                    i
+                  );
+                }
+              }
             }
           }
         }
-      }
-    }
 
-    // Force phone input to refresh
-    this.$nextTick(() => {
-      this.key++;
-    });
-  } catch (error) {
-    console.error("Error fetching teacher data:", error);
-    this.$message.error("Error loading teacher data");
-  }
-}
+        // Force phone input to refresh
+        this.$nextTick(() => {
+          this.key++;
+        });
+      } catch (error) {
+        console.error("Error fetching teacher data:", error);
+        this.$message.error("Error loading teacher data");
+      }
+    },
   },
 
   async created() {

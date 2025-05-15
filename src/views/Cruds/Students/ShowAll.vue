@@ -100,7 +100,10 @@
             <i class="fal fa-search"></i>
           </button>
         </div>
-        <div class="title_route_wrapper" v-if="$can('clients create', 'clients')">
+        <div
+          class="title_route_wrapper"
+          v-if="$can('clients create', 'clients')"
+        >
           <router-link to="/students/create">
             {{ $t("TITLES.addStudent") }}
           </router-link>
@@ -164,7 +167,10 @@
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
           <div class="actions">
-            <a-tooltip placement="bottom" v-if="$can('clients delete', 'clients')">
+            <a-tooltip
+              placement="bottom"
+              v-if="$can('clients delete', 'clients')"
+            >
               <template slot="title">
                 <span>{{ $t("BUTTONS.delete") }}</span>
               </template>
@@ -172,7 +178,10 @@
                 <i class="fal fa-trash-alt"></i>
               </button>
             </a-tooltip>
-            <a-tooltip placement="bottom" v-if="$can('clients edit', 'clients')">
+            <a-tooltip
+              placement="bottom"
+              v-if="$can('clients edit', 'clients')"
+            >
               <template slot="title">
                 <span>{{ $t("BUTTONS.edit") }}</span>
               </template>
@@ -265,7 +274,9 @@
                 <v-btn
                   class="modal_confirm_btn"
                   @click="HandlingItemActivationStatus"
-                  :disabled="!!!deactivateReason || deactivateReason?.length < 3"
+                  :disabled="
+                    !!!deactivateReason || deactivateReason?.length < 3
+                  "
                 >
                   {{ $t("BUTTONS.ok") }}
                 </v-btn>
@@ -280,40 +291,66 @@
             </v-card>
           </v-dialog>
           <!-- End:: Deactivate Modal -->
-           <!-- Start:: Wallet Modal -->
+          <!-- Start:: Wallet Modal -->
           <v-dialog v-model="user_wallet_modal">
             <v-card>
               <v-card-title class="text-h5 justify-center">
-                {{
-                  $t("PLACEHOLDERS.change_balance")
-                }}
+                {{ $t("PLACEHOLDERS.change_balance") }}
               </v-card-title>
               <div class="w-100">
                 <div class="mt-3">
                   <div>
-                      <p class="font-weight-bold mx-1" style="font-size: 16px;">{{ $t("SIDENAV.Clients.user_balance") }}: {{ balance }} {{ $t("PLACEHOLDERS.riyal") }} </p>
-                      <div class="mt-5">
-                      <p class="font-weight-bold mx-1 d-inline-block" style="font-size: 16px;">{{ $t("SIDENAV.Clients.charge_amout") }} </p>
-                        <input
+                    <p class="font-weight-bold mx-1" style="font-size: 16px">
+                      {{ $t("SIDENAV.Clients.user_balance") }}: {{ balance }}
+                      {{ $t("PLACEHOLDERS.riyal") }}
+                    </p>
+                    <div class="mt-5">
+                      <p
+                        class="font-weight-bold mx-1 d-inline-block"
+                        style="font-size: 16px"
+                      >
+                        {{ $t("SIDENAV.Clients.charge_amout") }}
+                      </p>
+                      <input
                         type="number"
                         class="bg-white rounded mx-3 p-2 w-25"
                         v-model="charge_amout"
                       />
-                      <p class="d-inline-block">{{ $t('PLACEHOLDERS.riyal') }}</p>
-                      </div>
-                      <div class="mt-5">
-                        <p style="font-size: 16px;" class="font-weight-bold mx-1 d-inline-block">{{ $t("SIDENAV.Clients.note2") }} ({{ $t("PLACEHOLDERS.optional") }}): </p>
-                        <input
-                          type="text"
-                          class="bg-white rounded mx-3 p-2 w-75 mt-2"
-                          v-model="note"
-                        />
-                      </div>
-                      <div class="text-center mt-5">
-                        <v-btn style="font-size: 16px;" class="modal_confirm_btn mx-1 bg-success text-white" @click="changeBalance()" :disabled="button_waiting">{{$t("BUTTONS.save")}}</v-btn>
-                        <v-btn style="font-size: 16px;" class="modal_confirm_btn mx-1 bg-danger text-white" @click="closeWalletModal()">{{$t("BUTTONS.cancel")}}</v-btn>
-                      </div>
+                      <p class="d-inline-block">
+                        {{ $t("PLACEHOLDERS.riyal") }}
+                      </p>
                     </div>
+                    <div class="mt-5">
+                      <p
+                        style="font-size: 16px"
+                        class="font-weight-bold mx-1 d-inline-block"
+                      >
+                        {{ $t("SIDENAV.Clients.note2") }} ({{
+                          $t("PLACEHOLDERS.optional")
+                        }}):
+                      </p>
+                      <input
+                        type="text"
+                        class="bg-white rounded mx-3 p-2 w-75 mt-2"
+                        v-model="note"
+                      />
+                    </div>
+                    <div class="text-center mt-5">
+                      <v-btn
+                        style="font-size: 16px"
+                        class="modal_confirm_btn mx-1 bg-success text-white"
+                        @click="changeBalance()"
+                        :disabled="button_waiting"
+                        >{{ $t("BUTTONS.save") }}</v-btn
+                      >
+                      <v-btn
+                        style="font-size: 16px"
+                        class="modal_confirm_btn mx-1 bg-danger text-white"
+                        @click="closeWalletModal()"
+                        >{{ $t("BUTTONS.cancel") }}</v-btn
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
             </v-card>
@@ -566,7 +603,7 @@ export default {
     // End:: Handel Filter
 
     // Start:: User Wallet Modal
-    openWalletModal(item){
+    openWalletModal(item) {
       this.user_wallet_modal = true;
       this.balance = item.balance;
       this.note = item.note;
@@ -575,7 +612,7 @@ export default {
     closeWalletModal() {
       this.user_wallet_modal = false;
     },
-    async changeBalance(){
+    async changeBalance() {
       this.button_waiting = true;
       const REQUEST_DATA = new FormData();
       if (this.charge_amout) {
