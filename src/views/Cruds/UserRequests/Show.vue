@@ -120,7 +120,7 @@
                 class="d-block text-center text-decoration-none py-2 download_btn"
                 style="border: 1px #af18f9 solid; border-radius: 8px;"
               >
-                {{ $t("BUTTONS.educational") }} <i class="fal fa-file-pdf mx-3"></i>
+                {{ $t("BUTTONS.educational") }}
               </a>
             </div>
             <div class="col-6 mb-2">
@@ -132,7 +132,7 @@
                 class="d-block text-center text-decoration-none py-2 download_btn"
                 style="border: 1px #af18f9 solid; border-radius: 8px;"
               >
-                {{ $t("BUTTONS.cv") }} <i class="fal fa-file-pdf mx-3"></i>
+                {{ $t("BUTTONS.cv") }}
               </a>
             </div>
           </div>
@@ -159,6 +159,7 @@
                   controls
                   autoplay
                   loop
+                  muted
                 ></video>
                 <img v-else :src="data.video" alt="Advertisement Image" />
               </div>

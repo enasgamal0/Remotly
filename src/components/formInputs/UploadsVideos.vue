@@ -35,6 +35,7 @@
             loading="lazy"
             :src="videoUrl"
             controls
+            muted
           ></video>
           <div class="overlay">
             <span @click.stop="onRemove(index)" class="remove-file">x</span>
@@ -52,6 +53,7 @@
             loading="lazy"
             :src="videoUrl"
             controls
+            muted
           ></video>
           <div class="overlay">
             <span @click.stop="onRemove(index)" class="remove-file">x</span>

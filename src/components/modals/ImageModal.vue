@@ -22,6 +22,7 @@
                 controls
                 autoplay
                 loop
+                muted
               ></video>
             <img
               v-else

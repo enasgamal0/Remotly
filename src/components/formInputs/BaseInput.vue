@@ -14,7 +14,7 @@
       </label>
       <input :id="$attrs.id" class="form-control" :type="type" :value="value" @click="$emit('fireClick')"
       :dir="getAppLocale == 'ar' && type == 'tel' ? 'rtl' : ''"
-
+      :maxlength="type == 'tel' ? 15 : ''"
         @input="updateValue($event)" :readonly="readonly" :disabled="disabled" />
     </div>
     <!-- ========== End:: Text || Number || Tel || Email Input ========== -->

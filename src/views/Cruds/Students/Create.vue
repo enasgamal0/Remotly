@@ -373,7 +373,7 @@ export default {
       }
 
       if (this.data.dial_code) {
-        REQUEST_DATA.append("country_code", this.data.dial_code);
+        REQUEST_DATA.append("country_code", "+"+this.data.dial_code);
       }
 
       if (this.data.phone) {

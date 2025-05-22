@@ -162,6 +162,7 @@
                 width="80"
                 height="60"
                 class="rounded"
+                muted
               ></video>
               <img
                 v-else

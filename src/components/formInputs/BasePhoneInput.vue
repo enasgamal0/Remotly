@@ -7,12 +7,13 @@
       </label>
       <!-- :key="defaultCountry" -->
       <vue-tel-input
-        style="direction: ltr"
+        style="direction: ltr; color: black;"
         @input="updateValue"
         :autoFormat="false"
         @country-changed="countryChanged"
         :defaultCountry="defaultCountry"
-        inputOptions=""
+        :preferredCountries="['SA']"
+        :inputOptions="{ maxlength: 15 }"
         :key="defaultCountry"
         :disabled="disabled"
         v-model="value"
@@ -45,6 +46,7 @@ export default {
     defaultCountry: {
       required: false,
       type: String,
+      default: "SA",
     },
     key: {
       required: false,

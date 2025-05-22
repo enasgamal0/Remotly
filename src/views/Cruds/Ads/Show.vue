@@ -31,6 +31,7 @@
                 controls
                 autoplay
                 loop
+                muted
               ></video>
               <img v-else :src="data.image.path" alt="Advertisement Image" />
             </div>
@@ -46,6 +47,7 @@
                 controls
                 autoplay
                 loop
+                muted
               ></video>
               <img v-else :src="data.image2.path" alt="Advertisement Image" />
             </div>

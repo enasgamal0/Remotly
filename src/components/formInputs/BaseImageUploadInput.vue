@@ -24,6 +24,7 @@
           autoplay
           controls
           loop
+          muted
           class="w-100 h-100"
           ref="videoPreview"
         >

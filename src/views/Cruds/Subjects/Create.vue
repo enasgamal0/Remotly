@@ -92,7 +92,7 @@
                   :optionsList="getFilteredStages(index)"
                   :placeholder="$t('PLACEHOLDERS.academic_stage')"
                   v-model.trim="item.academic_stage"
-                  @input="getAcademicYears(item?.academic_stage?.id, index)"
+                  @input="getAcademicYears(item?.academic_stage?.id, index), item.academic_year = []"
                 />
                 <base-select-input
                   col="4"

@@ -21,6 +21,7 @@
             loading="lazy"
             :src="imgUrl"
             controls
+            muted
           ></video>
           <div @click="openImg(imgUrl)" class="eyeWrapper">
             <i class="fas fa-eye"></i>
@@ -38,6 +39,7 @@
             loading="lazy"
             :src="imgUrl"
             controls
+            muted
           ></video>
         </div>
       </div>
@@ -57,6 +59,7 @@
         loading="lazy"
         :src="bigImgSrc"
         controls
+        muted
       ></video>
     </v-dialog>
   </main>

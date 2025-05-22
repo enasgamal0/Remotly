@@ -700,7 +700,7 @@ export default {
         REQUEST_DATA.append("email", this.data.email);
       }
       if (this.data.dial_code) {
-        REQUEST_DATA.append("country_code", this.data.dial_code);
+        REQUEST_DATA.append("country_code", "+"+this.data.dial_code);
       }
       if (this.data.iso_code) {
         REQUEST_DATA.append("iso_code", this.data.iso_code);

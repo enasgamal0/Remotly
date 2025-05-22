@@ -156,6 +156,32 @@
             v-model.trim="data.current_job"
             disabled
           />
+          <div class="row m-auto" style="font-size: 16px;">
+            <div class="col-6 mb-2">
+              <a
+                v-if="data.educational"
+                :href="data.educational"
+                download
+                target="_blank"
+                class="d-block text-center text-decoration-none py-2 download_btn"
+                style="border: 1px #af18f9 solid; border-radius: 8px;"
+              >
+                {{ $t("BUTTONS.educational") }}
+              </a>
+            </div>
+            <div class="col-6 mb-2">
+              <a
+                v-if="data.cv"
+                :href="data.cv"
+                download
+                target="_blank"
+                class="d-block text-center text-decoration-none py-2 download_btn"
+                style="border: 1px #af18f9 solid; border-radius: 8px;"
+              >
+                {{ $t("BUTTONS.cv") }}
+              </a>
+            </div>
+          </div>
           <!-- Grouped by Academic Stage & Year -->
           <div v-if="data.subjects && data.subjects[0]?.academic_stage">
             <div
@@ -226,7 +252,7 @@
               <!-- Display image -->
               <div class="preview-container text-center my-3">
                 <h6 style="color: #af18f9">{{ $t("PLACEHOLDERS.video") }}</h6>
-                <video :src="data.video?.path" controls autoplay loop></video>
+                <video :src="data.video?.path" controls autoplay loop muted></video>
               </div>
             </div>
           </div>
@@ -449,16 +475,8 @@ export default {
         this.data = {
           image: { path: teacher.image, file: null },
           video: { path: teacher.user?.details?.video, file: null },
-          educational: {
-            path: teacher.user.details.educational,
-            file: null,
-            name: teacher.user.details.educational?.split("/").pop() || null,
-          },
-          cv: {
-            path: teacher.user.details.cv,
-            file: null,
-            name: teacher.user.details.cv?.split("/").pop() || null,
-          },
+          educational: teacher.user.details.educational,
+          cv: teacher.user.details.cv,
           dial_code: teacher.country_code,
           iso_code: teacher.iso_code,
           phone: teacher.mobile,

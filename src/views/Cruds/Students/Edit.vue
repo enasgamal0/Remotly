@@ -365,7 +365,7 @@ export default {
       }
 
       if (this.data.dial_code) {
-        REQUEST_DATA.append("country_code", this.data.dial_code);
+        REQUEST_DATA.append("country_code", "+"+this.data.dial_code);
       }
 
       if (this.data.phone) {
@@ -393,6 +393,7 @@ export default {
         });
         this.isWaitingRequest = false;
         this.$message.success(this.$t("MESSAGES.editedSuccessfully"));
+        this.$router.push({ path: "/students/all" });
         this.getData();
       } catch (error) {
         this.isWaitingRequest = false;

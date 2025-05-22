@@ -147,6 +147,7 @@
                 width="150"
                 height="100"
                 controls
+                muted
               ></video>
               <img
                 v-else
