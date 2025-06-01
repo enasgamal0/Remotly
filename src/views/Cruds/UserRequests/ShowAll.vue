@@ -273,7 +273,7 @@
                 v-if="itemToChangeActivationStatus"
               >
                 {{
-                  $t("TITLES.DeactivateConfirmingMessage", {
+                  $t("TITLES.rejectConfirmingMessage", {
                     name: itemToChangeActivationStatus.name,
                   })
                 }}
@@ -284,7 +284,7 @@
                   col="12"
                   rows="3"
                   type="textarea"
-                  :placeholder="$t('PLACEHOLDERS.deactivateReason')"
+                  :placeholder="$t('PLACEHOLDERS.reason_reject')"
                   v-model.trim="deactivateReason"
                   required
                 />
@@ -301,7 +301,7 @@
 
                 <v-btn
                   class="modal_cancel_btn"
-                  @click="dialogDeactivate = false, deactivateReason = null"
+                  @click="dialogStatusReject = false, deactivateReason = null"
                   >{{ $t("BUTTONS.cancel") }}</v-btn
                 >
                 <v-spacer></v-spacer>

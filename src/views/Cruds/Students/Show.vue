@@ -13,6 +13,34 @@
 
     <!-- Start:: Single Step Form Content -->
     <div class="single_step_form_content_wrapper">
+      <!-- ==== Start:: Status Badges ==== -->
+      <div class="badges_wrapper d-flex justify-content-between my-5">
+            <div class="wrapper d-flex gap-2">
+              <v-chip color="amber darken-2" text-color="white" v-if="data.numberOfVisits">
+                {{
+                  $t("TITLES.numberOfVisits", { number: data.numberOfVisits })
+                }}
+              </v-chip>
+              <v-chip
+                color="amber darken-2"
+                text-color="white"
+                v-if="data.lastVisit"
+              >
+                {{ $t("TITLES.lastVisit", { date: data.lastVisit }) }}
+              </v-chip>
+            </div>
+            <v-chip v-if="data.active == 1" :color="'green'" text-color="white">
+              {{ data.active ? $t("STATUS.active") : $t("STATUS.notActive") }}
+            </v-chip>
+            <v-chip
+              v-else-if="data.active == 0"
+              :color="'red'"
+              text-color="white"
+            >
+              {{ data.active ? $t("STATUS.active") : $t("STATUS.notActive") }}
+            </v-chip>
+          </div>
+          <!-- ==== End:: Status Badges ==== -->
       <form>
         <div class="row">
           <!-- Start:: Image Input -->
@@ -254,6 +282,9 @@ export default {
         this.data.specialization = res.data.data?.client_details?.user?.details?.specializations;
         this.data.academic_stage = res.data.data?.client_details?.user?.details?.academic_stage;
         this.data.academic_year = res.data.data?.client_details?.user?.details?.academic_year;
+        this.data.active = res.data.data?.client_details?.is_active;
+        this.data.numberOfVisits = res.data.data?.client_details?.login_number;
+        this.data.lastVisit = res.data.data?.client_details?.last_login;
         // End:: Set Data
       } catch (error) {
         console.log(error.response.data.message);

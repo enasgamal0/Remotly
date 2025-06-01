@@ -78,16 +78,17 @@
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.spoken_languages')"
-            v-model.trim="data.spoken_languages"
-            disabled
-          />
-          <base-input
-            col="6"
-            type="text"
             :placeholder="$t('PLACEHOLDERS.id_number')"
             v-model.trim="data.id_number"
             disabled
+          />
+          <base-select-input
+            col="12"
+            :optionsList="[]"
+            :placeholder="$t('PLACEHOLDERS.spoken_languages')"
+            v-model="data.spoken_languages"
+            disabled
+            multiple
           />
           <base-input
             col="6"
@@ -108,6 +109,13 @@
             type="text"
             :placeholder="$t('PLACEHOLDERS.current_job')"
             v-model.trim="data.current_job"
+            disabled
+          />
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.foundation')"
+            v-model.trim="data.foundation"
             disabled
           />
           <div class="row m-auto" style="font-size: 16px;">
@@ -264,10 +272,8 @@ export default {
         this.data.age = res.data.data.teacher.user.details.age;
         this.data.gender_text = res.data.data.teacher.user.details.gender_text;
         this.data.spoken_languages =
-          res.data.data.teacher.user.details?.spoken_languages
-            ?.map((lang) => lang.name)
-            .join(" & ") || "";
-        this.data.foundation = res.data.data.teacher.user.details?.foundation;
+          res.data.data.teacher.user.details?.spoken_languages;
+        this.data.foundation = res.data.data.teacher.user.details?.foundation_type_text;
         this.data.about = res.data.data.teacher.user.details?.about;
         this.data.id_number = res.data.data.teacher.user.details?.id_number;
         this.data.expertise_area =

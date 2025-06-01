@@ -18,6 +18,34 @@
           <h5 style="color: #af18f9; font-weight: 800">
             {{ $t("PLACEHOLDERS.personal_data") }}
           </h5>
+          <!-- ==== Start:: Status Badges ==== -->
+          <div class="badges_wrapper d-flex justify-content-between my-5">
+            <div class="wrapper d-flex gap-2">
+              <v-chip color="amber darken-2" text-color="white" v-if="data.numberOfVisits">
+                {{
+                  $t("TITLES.numberOfVisits", { number: data.numberOfVisits })
+                }}
+              </v-chip>
+              <v-chip
+                color="amber darken-2"
+                text-color="white"
+                v-if="data.lastVisit"
+              >
+                {{ $t("TITLES.lastVisit", { date: data.lastVisit }) }}
+              </v-chip>
+            </div>
+            <v-chip v-if="data.active == 1" :color="'green'" text-color="white">
+              {{ data.active ? $t("STATUS.active") : $t("STATUS.notActive") }}
+            </v-chip>
+            <v-chip
+              v-else-if="data.active == 0"
+              :color="'red'"
+              text-color="white"
+            >
+              {{ data.active ? $t("STATUS.active") : $t("STATUS.notActive") }}
+            </v-chip>
+          </div>
+          <!-- ==== End:: Status Badges ==== -->
           <!-- Start:: Image Upload Input -->
           <div class="d-flex justify-center gap-3 flex-wrap">
             <div v-if="data.image.path">
@@ -150,13 +178,20 @@
             disabled
           />
           <base-input
-            col="12"
+            col="6"
             type="text"
             :placeholder="$t('PLACEHOLDERS.current_job')"
             v-model.trim="data.current_job"
             disabled
           />
-          <div class="row m-auto" style="font-size: 16px;">
+          <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.foundation')"
+            v-model.trim="data.foundation"
+            disabled
+          />
+          <div class="row m-auto" style="font-size: 16px">
             <div class="col-6 mb-2">
               <a
                 v-if="data.educational"
@@ -164,7 +199,7 @@
                 download
                 target="_blank"
                 class="d-block text-center text-decoration-none py-2 download_btn"
-                style="border: 1px #af18f9 solid; border-radius: 8px;"
+                style="border: 1px #af18f9 solid; border-radius: 8px"
               >
                 {{ $t("BUTTONS.educational") }}
               </a>
@@ -176,7 +211,7 @@
                 download
                 target="_blank"
                 class="d-block text-center text-decoration-none py-2 download_btn"
-                style="border: 1px #af18f9 solid; border-radius: 8px;"
+                style="border: 1px #af18f9 solid; border-radius: 8px"
               >
                 {{ $t("BUTTONS.cv") }}
               </a>
@@ -252,7 +287,13 @@
               <!-- Display image -->
               <div class="preview-container text-center my-3">
                 <h6 style="color: #af18f9">{{ $t("PLACEHOLDERS.video") }}</h6>
-                <video :src="data.video?.path" controls autoplay loop muted></video>
+                <video
+                  :src="data.video?.path"
+                  controls
+                  autoplay
+                  loop
+                  muted
+                ></video>
               </div>
             </div>
           </div>
@@ -398,6 +439,7 @@ export default {
         expertise_area: null,
         number_year_experience: null,
         current_job: null,
+        foundation: null,
         active: true,
       },
       countries: [],
@@ -489,9 +531,13 @@ export default {
           expertise_area: teacher.user.details.expertise_area,
           number_year_experience: teacher.user.details.number_year_experience,
           current_job: teacher.user.details.current_job,
+          foundation: teacher.user.details.foundation_type_text,
           gender: teacher.user.details.gender,
           age: teacher.user.details.age,
           subjects: teacher.user?.subjects,
+          numberOfVisits: teacher?.login_number,
+          lastVisit: teacher?.last_login,
+          active: teacher?.is_active,
         };
       } catch (error) {
         console.error("Error fetching teacher data:", error);
