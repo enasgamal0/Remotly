@@ -2346,6 +2346,7 @@
   },
 
   "VALIDATION": {
+    "PHONE_NUMBER_LENGTH": "Phone number digits must equal",
     "academic_stages": "You must select at least one academic stage",
     "empty_day": "Work hours for the previous day have not been scheduled",
     "reason_ar": "Reason(AR) Field is Required",
