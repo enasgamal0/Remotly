@@ -15,15 +15,6 @@
     <div class="single_step_form_content_wrapper">
       <form @submit.prevent="validateFormInputs">
         <div class="row">
-          <!-- Start:: Color Input -->
-          <label for="color" class="text-center" style="color: #af18f9; font-size: 16px;">{{ $t("PLACEHOLDERS.color") }} <span class="text-danger">*</span></label>
-          <div class="d-flex justify-space-around">
-            <v-color-picker
-              class="ma-2"
-              v-model="data.color"
-            ></v-color-picker>
-          </div>
-          <!-- End:: Color Input -->
 
           <!-- Start:: Name Input -->
           <base-input
@@ -131,7 +122,6 @@ export default {
     return {
       isWaitingRequest: false,
       data: {
-        color: "#F9F9F8",
         name_ar: "",
         name_en: "",
         number_of_available_auctions: null,
@@ -154,10 +144,6 @@ export default {
     },
     async submitForm() {
       const REQUEST_DATA = new FormData();
-      console.log("aaaaaa", this.data.color)
-      if (this.data.color != "#F9F9F8"){
-        REQUEST_DATA.append("color", this.data.color);
-      }
       REQUEST_DATA.append("name[ar]", this.data.name_ar);
       REQUEST_DATA.append("name[en]", this.data.name_en);
       REQUEST_DATA.append(

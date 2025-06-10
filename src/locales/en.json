@@ -92,6 +92,8 @@
       "show": "Show Message Data"
     },
     "AppContent": {
+      "rewards": "Rewards",
+      "cashback": "Cashback",
       "addresses": "Addresses Management",
       "title": "Content Management",
       "defination_price": "Flexible price definition text",
@@ -1261,6 +1263,13 @@
   },
 
   "PLACEHOLDERS": {
+    "shadow_teacher_package": "Shadow Teacher Package",
+    "lecture_package": "Lectures Package",
+    "type": "Package Type",
+    "lecture_numbers": "Number of sessions",
+    "current_users": "Number of subscribed users",
+    "rewards": "Rewards",
+    "cashback": "Cashback",
     "subject_name": "Subject",
     "subjects_name": "Subjects",
     "personal_data": "Personal Data",

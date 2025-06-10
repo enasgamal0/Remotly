@@ -15,10 +15,6 @@
     <div class="single_step_form_content_wrapper">
       <form>
         <div class="row">
-          <div class="preview-container my-3">
-            <span style="color: #af18f9; font-size: 16px;">{{ $t("PLACEHOLDERS.color") }}</span>
-            <div class="package_color d-inline-block mx-4" :style="{ backgroundColor: data.color }"></div>
-          </div>
           <!-- Start:: Name Input -->
           <base-input
             col="6"
@@ -121,7 +117,6 @@ export default {
     return {
       isWaitingRequest: false,
       data: {
-        color: null,
         name_ar: "",
         name_en: "",
         number_of_available_auctions: null,
@@ -145,7 +140,6 @@ export default {
           method: "GET",
           url: `packages/${this.$route.params?.id}`,
         });
-        this.data.color = res.data.data.color;
         this.data.name_ar = res.data.data.name_ar;
         this.data.name_en = res.data.data.name_en;
         this.data.number_of_available_auctions = res.data.data.number_of_available_bids;

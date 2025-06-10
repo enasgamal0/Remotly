@@ -83,16 +83,12 @@ import AppContentHome from "../views/Cruds/AppContent/Home.vue";
 import GeneralSettings from "../views/Cruds/AppSettings/GeneralSettings.vue";
 import AppSettings from "../views/Cruds/AppSettings/AppSettings.vue";
 import AboutUs from "../views/Cruds/AppContent/AboutUs.vue";
-import Addresses from "../views/Cruds/AppContent/Addresses.vue";
 import Terms from "../views/Cruds/AppContent/Terms.vue";
 import DeleteAccount from "../views/Cruds/AppContent/DeleteAccount.vue";
+import Rewards from "../views/Cruds/AppContent/Rewards.vue";
+import Cashback from "../views/Cruds/AppContent/Cashback.vue";
 import PrivacyPolicy from "../views/Cruds/AppContent/PrivacyPolicy.vue";
 import TermsProvider from "../views/Cruds/AppContent/TermsProvider.vue";
-import Goals from "../views/Cruds/AppContent/Goals.vue";
-import Message from "../views/Cruds/AppContent/Message.vue";
-import Vision from "../views/Cruds/AppContent/Vision.vue";
-import Statistics from "../views/Cruds/AppContent/Statistics.vue";
-import Influencer from "../views/Cruds/AppContent/Influencer.vue";
 // ============== End:: App Content Routes
 
 // Start:: Questiions Router Components
@@ -527,18 +523,6 @@ const routes = [
             },
           },
           {
-            path: "addresses",
-            name: "Addresses",
-            component: Addresses,
-            meta: {
-              middleware: [auth],
-              requiresPermission: {
-                action: "settings create",
-                subject: "settings",
-              },
-            },
-          },
-          {
             path: "terms",
             name: "Terms",
             component: Terms,
@@ -587,9 +571,9 @@ const routes = [
             },
           },
           {
-            path: "vision",
-            name: "Vision",
-            component: Vision,
+            path: "rewards",
+            name: "Rewards",
+            component: Rewards,
             meta: {
               middleware: [auth],
               requiresPermission: {
@@ -599,45 +583,9 @@ const routes = [
             },
           },
           {
-            path: "message",
-            name: "Message",
-            component: Message,
-            meta: {
-              middleware: [auth],
-              requiresPermission: {
-                action: "settings create",
-                subject: "settings",
-              },
-            },
-          },
-          {
-            path: "goals",
-            name: "Goals",
-            component: Goals,
-            meta: {
-              middleware: [auth],
-              requiresPermission: {
-                action: "settings create",
-                subject: "settings",
-              },
-            },
-          },
-          {
-            path: "statistics",
-            name: "Statistics",
-            component: Statistics,
-            meta: {
-              middleware: [auth],
-              requiresPermission: {
-                action: "settings create",
-                subject: "settings",
-              },
-            },
-          },
-          {
-            path: "influencer",
-            name: "Influencer",
-            component: Influencer,
+            path: "cashback",
+            name: "Cashback",
+            component: Cashback,
             meta: {
               middleware: [auth],
               requiresPermission: {
@@ -2145,8 +2093,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "packages index",
-                subject: "packages",
+                action: "package index",
+                subject: "package",
               },
             },
           },
@@ -2157,8 +2105,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "packages create",
-                subject: "packages",
+                action: "package create",
+                subject: "package",
               },
             },
           },
@@ -2170,8 +2118,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "packages edit",
-                subject: "packages",
+                action: "package edit",
+                subject: "package",
               },
             },
           },
@@ -2183,8 +2131,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "packages show",
-                subject: "packages",
+                action: "package show",
+                subject: "package",
               },
             },
           },
@@ -3147,17 +3095,17 @@ const routes = [
           },
         },
       },
-      // {
-      //   path: "/app_settings",
-      //   component: AppSettings,
-      //   meta: {
-      //     middleware: [auth],
-      //     requiresPermission: {
-      //       action: "settings edit",
-      //       subject: "settings",
-      //     },
-      //   },
-      // },
+      {
+        path: "/app_settings",
+        component: AppSettings,
+        meta: {
+          middleware: [auth],
+          requiresPermission: {
+            action: "settings edit",
+            subject: "settings",
+          },
+        },
+      },
       // End:: App contact Routes Config
     ],
   },

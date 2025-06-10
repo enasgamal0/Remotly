@@ -22,21 +22,49 @@
             <div class="row justify-content-center align-items-center w-100">
               <!-- Start:: Name Input -->
               <base-input
-                col="5"
+                col="3"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.name')"
                 v-model.trim="filterOptions.name"
               />
               <!-- End:: Name Input -->
 
+              <!-- Start:: Type Input -->
+              <base-select-input
+                col="3"
+                :optionsList="packageTypes"
+                :placeholder="$t('PLACEHOLDERS.type')"
+                v-model="filterOptions.type"
+              />
+              <!-- End:: Type Input -->
+
               <!-- Start:: Status Input -->
               <base-select-input
-                col="5"
+                col="3"
                 :optionsList="activeStatuses"
                 :placeholder="$t('PLACEHOLDERS.status')"
                 v-model="filterOptions.is_active"
               />
               <!-- End:: Status Input -->
+
+              <!-- Start:: From Input -->
+              <base-input
+                col="4"
+                type="date"
+                :placeholder="$t('PLACEHOLDERS.fromDate')"
+                v-model.trim="filterOptions.from"
+              />
+              <!-- End:: From Input -->
+
+              <!-- Start:: To Input -->
+              <base-input
+                col="4"
+                type="date"
+                :placeholder="$t('PLACEHOLDERS.toDate')"
+                v-model.trim="filterOptions.to"
+              />
+              <!-- End:: To Input -->
+              
             </div>
 
             <div class="btns_wrapper">
@@ -72,7 +100,7 @@
 
         <div
           class="title_route_wrapper"
-          v-if="$can('packages create', 'packages')"
+          v-if="$can('package create', 'package')"
         >
           <router-link to="/packages/create">
             {{ $t("TITLES.addPackage") }}
@@ -94,27 +122,38 @@
         hide-default-footer
       >
         <template v-slot:[`item.id`]="{ index }">
-          {{ (paginations.current_page - 1) * paginations.items_per_page + index + 1 }}
+          {{
+            (paginations.current_page - 1) * paginations.items_per_page +
+            index +
+            1
+          }}
+        </template>
+        <template v-slot:[`item.date_time.date`]="{ item }" dir="rtl">
+          {{ item.date_time?.date?.split(" ").reverse().join(" ") }},
+          {{ item.date_time?.time }}
+        </template>
+        <template v-slot:[`item.type`]="{ item }">
+          {{ $t(`PLACEHOLDERS.${item.type}`) }}
         </template>
         <!-- Start:: No Data State -->
         <template v-slot:no-data>
           {{ $t("TABLES.noData") }}
         </template>
         <!-- Start:: No Data State -->
-         
+
         <!-- Start:: Activation -->
-        <template v-slot:[`item.is_active`]="{ item }">
+        <template v-slot:[`item.status`]="{ item }">
           <!-- v-if="permissions.activate" -->
           <div
             class="activation"
             dir="ltr"
             style="z-index: 1"
-            v-if="$can('packages activate', 'packages')"
+            v-if="$can('package activate', 'package')"
           >
             <v-switch
               class="mt-2"
               color="success"
-              v-model="item.is_active"
+              v-model="item.status"
               hide-details
               @change="changeActivationStatus(item)"
             ></v-switch>
@@ -127,7 +166,7 @@
           <div class="actions">
             <a-tooltip
               placement="bottom"
-              v-if="$can('packages delete', 'packages')"
+              v-if="$can('package delete', 'package')"
             >
               <template slot="title">
                 <span>{{ $t("BUTTONS.delete") }}</span>
@@ -138,18 +177,20 @@
             </a-tooltip>
             <a-tooltip
               placement="bottom"
-              v-if="$can('packages edit', 'packages')"
+              v-if="$can('package edit', 'package')"
             >
               <template slot="title">
                 <span>{{ $t("BUTTONS.edit") }}</span>
               </template>
-              
-              
+
               <button class="btn_edit" @click="editItem(item)">
                 <i class="fal fa-edit"></i>
               </button>
             </a-tooltip>
-            <a-tooltip placement="bottom" v-if="$can('packages show', 'packages')">
+            <a-tooltip
+              placement="bottom"
+              v-if="$can('package show', 'package')"
+            >
               <template slot="title">
                 <span>{{ $t("BUTTONS.show") }}</span>
               </template>
@@ -266,6 +307,20 @@ export default {
         },
       ];
     },
+    packageTypes() {
+      return [
+        {
+          id: 1,
+          name: this.$t("PLACEHOLDERS.shadow_teacher_package"),
+          value: "shadow_teacher_package",
+        },
+        {
+          id: 2,
+          name: this.$t("PLACEHOLDERS.lecture_package"),
+          value: "lecture_package",
+        },
+      ];
+    },
   },
 
   data() {
@@ -279,6 +334,9 @@ export default {
       filterFormIsActive: false,
       filterOptions: {
         name: null,
+        type: null,
+        from: null,
+        to: null,
         is_active: null,
       },
       // End:: Filter Data
@@ -299,20 +357,14 @@ export default {
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.number_of_available_bids"),
-          value: "number_of_available_auctions",
+          text: this.$t("PLACEHOLDERS.type"),
+          value: "type",
           sortable: false,
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.number_of_available_auctions"),
-          value: "number_of_available_bids",
-          sortable: false,
-          align: "center",
-        },
-        {
-          text: this.$t("PLACEHOLDERS.auction_order"),
-          value: "auction_order",
+          text: this.$t("PLACEHOLDERS.lecture_numbers"),
+          value: "lecture_numbers",
           sortable: false,
           align: "center",
         },
@@ -323,20 +375,20 @@ export default {
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.package_count_users"),
-          value: "number_of_subscribes",
+          text: this.$t("PLACEHOLDERS.current_users"),
+          value: "current_users",
           sortable: false,
           align: "center",
         },
         {
           text: this.$t("PLACEHOLDERS.status"),
-          value: "is_active",
+          value: "status",
           sortable: false,
           align: "center",
         },
         {
           text: this.$t("PLACEHOLDERS.created_at"),
-          value: "created_at",
+          value: "date_time.date",
           sortable: false,
           align: "center",
         },
@@ -391,6 +443,9 @@ export default {
     },
     async resetFilter() {
       this.filterOptions.name = null;
+      this.filterOptions.type = null;
+      this.filterOptions.from = null;
+      this.filterOptions.to = null;
       this.filterOptions.is_active = null;
 
       if (this.$route.query.page !== "1") {
@@ -418,8 +473,11 @@ export default {
       try {
         const params = {
           page: this.paginations.current_page,
-          name: this.filterOptions.name,
-          isActive: this.filterOptions.is_active?.value,
+          search_name: this.filterOptions.name,
+          type: this.filterOptions.type?.value,
+          date_from: this.filterOptions.from,
+          date_to: this.filterOptions.to,
+          status: this.filterOptions.is_active?.value ? 1 : 0,
         };
         let res = await this.$axios({
           method: "GET",
@@ -436,7 +494,7 @@ export default {
         this.loading = false;
         console.log(error.response.data.message);
       }
-    },    
+    },
     // End:: Set Table Rows
     showReplayModal(replay) {
       this.dialogDescription = true;
@@ -451,14 +509,10 @@ export default {
     // End:: Control Modals
     // Start:: Change Activation Status
     async changeActivationStatus(item) {
-      const REQUEST_DATA = new FormData();
-      // Start:: Append Request Data
-      // REQUEST_DATA.append("_method", "PUT");
       try {
         await this.$axios({
-          method: "POST",
-          url: `packages/activation/${item.id}`,
-          data: REQUEST_DATA,
+          method: "GET",
+          url: `status-toggle-package/${item.id}`,
         });
         this.setTableRows();
         this.$message.success(this.$t("MESSAGES.changeActivation"));

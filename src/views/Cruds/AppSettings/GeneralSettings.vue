@@ -33,7 +33,7 @@
                   v-model.trim="item.phone"
                 />
 
-                <div class="all_actions">
+                <div class="all_actions" v-if="phones?.length > 1">
                   <span
                     class="add_another remove_phone_number"
                     @click="removeRow(index)"

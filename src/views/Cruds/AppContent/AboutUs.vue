@@ -15,16 +15,6 @@
     <div class="single_step_form_content_wrapper">
       <form @submit.prevent="validateFormInputs">
         <div class="row">
-          <!-- Start:: Image Upload Input -->
-          <base-image-upload-input
-            col="12"
-            identifier="admin_image"
-            :preSelectedImage="data.image.path"
-            :placeholder="$t('PLACEHOLDERS.image')"
-            @selectImage="selectImage"
-            required
-          />
-          <!-- End:: Image Upload Input -->
           <!-- Start:: Ar Content Text Editor -->
           <base-text-editor
             col="6"
@@ -77,10 +67,6 @@ export default {
         contentEn: null,
         nameAr: null,
         nameEn: null,
-        image: {
-          path: null,
-          file: null,
-        },
       },
       // End:: Data Collection To Send
     };
@@ -97,7 +83,6 @@ export default {
         // Start:: Set Data
         this.data.contentAr = res.data.data[0].value?.content.ar;
         this.data.contentEn = res.data.data[0].value?.content.en;
-        this.data.image.path = res.data.data[0].value?.image;
         // End:: Set Data
       } catch (error) {
         console.log(error.response.data.message);
@@ -137,7 +122,6 @@ export default {
       REQUEST_DATA.append("value[title][en]", "About App");
       REQUEST_DATA.append("value[content][ar]", this.data.contentAr);
       REQUEST_DATA.append("value[content][en]", this.data.contentEn);
-      REQUEST_DATA.append("value[image]", this.data.image?.file);
       // REQUEST_DATA.append("_method", "PUT");
 
       try {
@@ -155,9 +139,6 @@ export default {
       }
     },
     // End:: Submit Form
-    selectImage(selectedImage) {
-      this.data.image = selectedImage;
-    },
   },
 
   created() {

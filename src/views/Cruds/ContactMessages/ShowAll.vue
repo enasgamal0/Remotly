@@ -159,13 +159,13 @@
         </template>
 
         <!-- Start:: Message Reply -->
-        <template v-slot:[`item.reply`]="{ item }">
+        <template v-slot:[`item.respond_message`]="{ item }">
           <template>
-            <h6 class="text-danger" v-if="!item.reply">
-              {{ $t("TABLES.noData") }}
+            <h6 v-if="!item.respond_message">
+              -
             </h6>
             <div class="actions" v-else>
-              <button class="btn_show" @click="showReplayModal(item.reply)">
+              <button class="btn_show" @click="showReplayModal(item.respond_message)">
                 <i class="fal fa-file-alt"></i>
               </button>
             </div>
@@ -178,24 +178,24 @@
         <!-- End:: Message Reply -->
 
         <!-- Start:: Message Type -->
-        <template v-slot:[`item._type`]="{ item }">
-          <h6 class="text-danger" v-if="!item._type">
+        <template v-slot:[`item.message_type_text`]="{ item }">
+          <h6 class="text-danger" v-if="!item.message_type_text">
             {{ $t("TABLES.noData") }}
           </h6>
           <v-chip v-else color="blue-grey darken-3" text-color="white" small>
-            {{ item._type }}
+            {{ item.message_type_text }}
           </v-chip>
         </template>
         <!-- End:: Message Type -->
 
         <!-- Start:: Message Status -->
-        <template v-slot:[`item.is_replied`]="{ item }">
+        <template v-slot:[`item.is_reply`]="{ item }">
           <v-chip
-            :color="item.reply ? 'green' : 'red'"
+            :color="item.is_reply ? 'green' : 'red'"
             text-color="white"
             small
           >
-            <template v-if="item.reply">
+            <template v-if="item.is_reply">
               {{ $t("STATUS.replied") }}
             </template>
             <template v-else>
@@ -208,9 +208,9 @@
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
           <div class="actions">
-            <!-- v-if="permissions.reply" -->
+            <!-- v-if="permissions.respond_message" -->
             <template>
-              <span class="blue-grey--text text--darken-1" v-if="item.reply">
+              <span class="blue-grey--text text--darken-1" v-if="item.respond_message">
                 <i class="far fa-horizontal-rule"></i>
               </span>
               <a-tooltip placement="bottom" v-else>
@@ -320,27 +320,27 @@ export default {
         {
           id: 1,
           name: this.$t("STATUS.request"),
-          value: "request",
+          value: "Request",
         },
         {
           id: 2,
           name: this.$t("STATUS.suggestion"),
-          value: "suggestion",
+          value: "Suggestion",
         },
         {
           id: 3,
           name: this.$t("STATUS.inquiry"),
-          value: "inquiry",
+          value: "Inquiry",
         },
         {
           id: 4,
           name: this.$t("STATUS.complaint"),
-          value: "complaint",
+          value: "Complaint",
         },
         {
           id: 5,
           name: this.$t("STATUS.other"),
-          value: "other",
+          value: "Other",
         },
       ];
     },
@@ -350,12 +350,12 @@ export default {
         {
           id: 1,
           name: this.$t("STATUS.replied"),
-          value: "answered",
+          value: "1",
         },
         {
           id: 2,
           name: this.$t("STATUS.notReplied"),
-          value: "unanswered",
+          value: "0",
         },
       ];
     },
@@ -399,7 +399,7 @@ export default {
         },
         {
           text: this.$t("TABLES.ContactMessages.phone"),
-          value: "mobile",
+          value: "phone",
           align: "center",
           width: "140",
           sortable: false,
@@ -426,21 +426,21 @@ export default {
         },
         {
           text: this.$t("TABLES.ContactMessages.replay"),
-          value: "reply",
+          value: "respond_message",
           align: "center",
           width: "200",
           sortable: false,
         },
         {
           text: this.$t("TABLES.ContactMessages.type"),
-          value: "_type",
+          value: "message_type_text",
           align: "center",
           width: "80",
           sortable: false,
         },
         {
           text: this.$t("TABLES.ContactMessages.status"),
-          value: "is_replied",
+          value: "is_reply",
           align: "center",
           width: "80",
           sortable: false,
@@ -528,14 +528,14 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "contacts",
+          url: "contact-us",
           params: {
             page: this.paginations.current_page,
             name: this.filterOptions.name,
-            mobile: this.filterOptions.phone,
+            phone: this.filterOptions.phone,
             email: this.filterOptions.email,
-            type: this.filterOptions.messageType?.value,
-            status: this.filterOptions.status?.value,
+            messageType: this.filterOptions.messageType?.value,
+            isReply: this.filterOptions.status?.value,
           },
         });
         this.loading = false;
@@ -572,16 +572,16 @@ export default {
     async sendReplay() {
       this.dialogSendReplay = false;
       // const REQUEST_DATA = new FormData();
-      // REQUEST_DATA.append("reply", this.messageReplay.reply);
+      // REQUEST_DATA.append("reply", this.messageReplay.respond_message);
       // REQUEST_DATA.append("_method", 'PUT');
       const REQUEST_DATA = {
-        reply: this.messageReplay,
+        reply_message: this.messageReplay,
       };
 
       try {
         await this.$axios({
           method: "POST",
-          url: `contacts/reply/${this.itemToSendReplay.id}`,
+          url: `contact-us/reply/${this.itemToSendReplay.id}`,
           data: REQUEST_DATA,
         });
         this.$message.success(this.$t("MESSAGES.sentSuccessfully"));
@@ -591,7 +591,7 @@ export default {
           (element) => element.id === this.itemToSendReplay.id
         );
         filteredElemet.replied = !filteredElemet.replied;
-        filteredElemet.reply = this.messageReplay;
+        filteredElemet.respond_message = this.messageReplay;
 
         this.itemToSendReplay = null;
         this.messageReplay = null;

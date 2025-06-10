@@ -102,6 +102,8 @@
       "show": "عرض بيانات الرسالة"
     },
     "AppContent": {
+      "rewards": "المكافآت",
+      "cashback": "الكاش باك",
       "addresses": "إدارة العناوين",
       "title": "إدارة المحتوى",
       "defination_price": "نص تعريف السعر المرن",
@@ -1262,6 +1264,13 @@
   },
 
   "PLACEHOLDERS": {
+    "shadow_teacher_package": "باقة معلم ظل",
+    "lecture_package": "باقة محاضرات",
+    "type": "نوع الباقة",
+    "lecture_numbers": "عدد الحصص",
+    "current_users": "عدد المستخدمين المشتركين",
+    "rewards": "المكافآت",
+    "cashback": "الكاش باك",
     "subject_name": "المادة الدراسية",
     "subjects_name": "المواد الدراسية",
     "personal_data": "البيانات الشخصية",
@@ -1682,7 +1691,7 @@
     "toDate": "تاريخ الإنشاء (إلى)",
     "startDate": "تاريخ البدء",
     "endDate": "تاريخ النهاية",
-    "messageReplay": "الرد علي الرسالة",
+    "messageReplay": "الرد على الرسالة",
     "suggestionReply": "الرد على المقترح",
     "role": "الدور",
     "editPassword": "تعديل كلمة المرور",

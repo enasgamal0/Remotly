@@ -1006,11 +1006,6 @@ export default {
             }
           }
         }
-
-        // Force phone input to refresh
-        this.$nextTick(() => {
-          this.key++;
-        });
       } catch (error) {
         console.error("Error fetching teacher data:", error);
         this.$message.error("Error loading teacher data");

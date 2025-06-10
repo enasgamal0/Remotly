@@ -2,7 +2,7 @@
   <div class="crud_form_wrapper">
     <!-- Start:: Title -->
     <div class="form_title_wrapper">
-      <h4>{{ $t("PLACEHOLDERS.vision") }}</h4>
+      <h4>{{ $t("PLACEHOLDERS.rewards") }}</h4>
     </div>
     <!-- End:: Title -->
 
@@ -82,7 +82,7 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `settings?key=vision`,
+          url: `settings?key=rewards`,
         });
         // Start:: Set Data
         this.data.contentAr = res.data.data[0].value.ar;
@@ -99,7 +99,7 @@ export default {
       this.isWaitingRequest = true;
       const isValidContent = (content) => {
         // Check if the content is either empty or only contains whitespace or tags
-        const strippedContent = content.replace(/<[^>]*>/g, '').trim();
+        const strippedContent = content.replace(/<[^>]*>/g, "").trim();
         return strippedContent.length > 0;
       };
       if (!this.data.contentAr || !isValidContent(this.data.contentAr)) {
@@ -121,7 +121,7 @@ export default {
     async submitForm() {
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
-      REQUEST_DATA.append("key", "vision");
+      REQUEST_DATA.append("key", "rewards");
 
       REQUEST_DATA.append("value[ar]", this.data.contentAr);
       REQUEST_DATA.append("value[en]", this.data.contentEn);
@@ -130,7 +130,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `settings?key=vision`,
+          url: `settings?key=rewards`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

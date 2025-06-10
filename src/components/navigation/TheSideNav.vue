@@ -832,25 +832,26 @@
       <!-- End:: banks Route -->
 
       <!-- Start:: packages Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('packages index', 'packages')"
+        v-if="$can('package index', 'package')"
       >
         <router-link to="/packages/all">
-          <span class="route_icon">
+          <span class="route_icon d-flex justify-center" style="background-color: rgba(107, 219, 182, 0.3); border-radius: 6px; width: 40px; height: 40px;">
             <img
-              src="@/assets/media/icons/ui_icons/subscription.png"
+              src="@/assets/media/icons/ui_icons/package.svg"
               alt="icon"
-              width="40"
-              height="40"
+              width="30"
+              height="30"
+              class="m-auto"
             />
           </span>
           <span class="route_text">
             {{ $t("PLACEHOLDERS.package_management") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: packages Route -->
 
       <!-- Start:: auctions Route -->
@@ -1141,7 +1142,7 @@
       <!-- End:: FAQ Route -->
 
       <!-- Start:: app settings Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
         v-if="$can('settings index', 'settings')"
@@ -1159,10 +1160,10 @@
             {{ $t("SIDENAV.settings.general_app") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: app settings Route -->
       <!-- Start:: Side Nav Routes -->
-      <!-- <div class="side_routes_wrapper">
+      <div class="side_routes_wrapper">
         <a-menu
           style="width: 100%"
           mode="vertical"
@@ -1200,14 +1201,14 @@
             </template>
           </a-sub-menu>
         </a-menu>
-      </div> -->
+      </div>
       <!-- End:: Side Nav Routes -->
 
       <!-- Start:: contacts Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('contacts index', 'contacts')"
+        v-if="$can('contactus index', 'contactus')"
       >
         <router-link to="/contact-messages/all">
           <span class="route_icon">
@@ -1222,7 +1223,7 @@
             {{ $t("SIDENAV.ContactMessages.title") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: contacts Route -->
 
       <div class="side_routes_wrapper">
@@ -1421,12 +1422,6 @@ export default {
           title: this.$t("SIDENAV.AppContent.title"),
           icon: require("@/assets/media/icons/ui_icons/book_mark.svg"),
           children: [
-            // {
-            //   key: "contact-messages",
-            //   title: this.$t("SIDENAV.ContactMessages.title"),
-            //   route: "/contact-messages/all",
-            //   hasPermission: this.$can("contacts index", "contacts"),
-            // },
             {
               key: "contact",
               title: this.$t("PLACEHOLDERS.contact_admins"),
@@ -1437,12 +1432,6 @@ export default {
               key: "AboutUs",
               title: this.$t("SIDENAV.AppContent.aboutUs"),
               route: "/app-content/about-us",
-              hasPermission: this.$can("settings create", "settings"),
-            },
-            {
-              key: "addresses",
-              title: this.$t("SIDENAV.AppContent.addresses"),
-              route: "/app-content/addresses",
               hasPermission: this.$can("settings create", "settings"),
             },
             {
@@ -1458,39 +1447,21 @@ export default {
               hasPermission: this.$can("settings create", "settings"),
             },
             {
+              key: "rewards",
+              title: this.$t("SIDENAV.AppContent.rewards"),
+              route: "/app-content/rewards",
+              hasPermission: this.$can("settings create", "settings"),
+            },
+            {
+              key: "cashback",
+              title: this.$t("SIDENAV.AppContent.cashback"),
+              route: "/app-content/cashback",
+              hasPermission: this.$can("settings create", "settings"),
+            },
+            {
               key: "delete-account",
               title: this.$t("PLACEHOLDERS.how_to_delete_account"),
               route: "/app-content/delete-account",
-              hasPermission: this.$can("settings create", "settings"),
-            },
-            {
-              key: "vision",
-              title: this.$t("PLACEHOLDERS.vision"),
-              route: "/app-content/vision",
-              hasPermission: this.$can("settings create", "settings"),
-            },
-            {
-              key: "goals",
-              title: this.$t("PLACEHOLDERS.goals"),
-              route: "/app-content/goals",
-              hasPermission: this.$can("settings create", "settings"),
-            },
-            {
-              key: "message",
-              title: this.$t("PLACEHOLDERS.message"),
-              route: "/app-content/message",
-              hasPermission: this.$can("settings create", "settings"),
-            },
-            {
-              key: "statistics",
-              title: this.$t("PLACEHOLDERS.statistics"),
-              route: "/app-content/statistics",
-              hasPermission: this.$can("settings create", "settings"),
-            },
-            {
-              key: "influencer",
-              title: this.$t("PLACEHOLDERS.influencer"),
-              route: "/app-content/influencer",
               hasPermission: this.$can("settings create", "settings"),
             },
           ],

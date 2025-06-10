@@ -15,16 +15,6 @@
     <div class="single_step_form_content_wrapper">
       <form @submit.prevent="validateFormInputs">
         <div class="row">
-          <!-- Start:: Color Input -->
-          <label for="color" class="text-center" style="color: #af18f9; font-size: 16px;">{{ $t("PLACEHOLDERS.color") }} <span class="text-danger">*</span></label>
-          <div class="d-flex justify-space-around">
-            <v-color-picker
-              class="ma-2"
-              v-model="data.color"
-            ></v-color-picker>
-          </div>
-          <!-- End:: Color Input -->
-
           <!-- Start:: Name Input -->
           <base-input
             col="6"
@@ -138,7 +128,6 @@ export default {
     return {
       isWaitingRequest: false,
       data: {
-        color: null,
         name_ar: "",
         name_en: "",
         number_of_available_auctions: null,
@@ -167,7 +156,6 @@ export default {
     async submitForm() {
       const REQUEST_DATA = new FormData();
       REQUEST_DATA.append("_method", "put");
-      REQUEST_DATA.append("color", this.data.color);
       REQUEST_DATA.append("name[ar]", this.data.name_ar);
       REQUEST_DATA.append("name[en]", this.data.name_en);
       REQUEST_DATA.append(
@@ -207,7 +195,6 @@ export default {
           method: "GET",
           url: `packages/${this.$route.params?.id}`,
         });
-        this.data.color = res.data.data.color;
         this.data.name_ar = res.data.data.name_ar;
         this.data.name_en = res.data.data.name_en;
         this.data.number_of_available_auctions = res.data.data.number_of_available_bids;
