@@ -78,7 +78,7 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `settings?key=about-website`,
+          url: `settings?key=about-app`,
         });
         // Start:: Set Data
         this.data.contentAr = res.data.data[0].value?.content.ar;
@@ -117,7 +117,7 @@ export default {
     async submitForm() {
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
-      REQUEST_DATA.append("key", "about-website");
+      REQUEST_DATA.append("key", "about-app");
       REQUEST_DATA.append("value[title][ar]","عن التطبيق");
       REQUEST_DATA.append("value[title][en]", "About App");
       REQUEST_DATA.append("value[content][ar]", this.data.contentAr);
@@ -127,7 +127,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `settings?key=about-website`,
+          url: `settings?key=about-app`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

@@ -1263,6 +1263,16 @@
   },
 
   "PLACEHOLDERS": {
+    "vat_rate": "VAT Rate (%)",
+    "app_commission_rate": "App Commission Rate (%)",
+    "cancellation_time_limit_hours": "Allowed hours to cancel a lecture without a penalty",
+    "cancellation_penalty_amount": "Cancellation Penalty Amount (SAR)",
+    "payment_confirmation_duration": "Payment Confirmation Duration",
+    "group_session_discount": "Group Session Discount (SAR)",
+    "online_lecture_duration": "Online Lecture Duration",
+    "pricing": "Pricing",
+    "online_lecture_price": "Online Lecture Price (SAR)",
+    "online_lecture_offer_price": "Online Lecture Offer Price (SAR)",
     "shadow_teacher_package": "Shadow Teacher Package",
     "lecture_package": "Lectures Package",
     "type": "Package Type",

@@ -15,7 +15,6 @@
     <div class="single_step_form_content_wrapper">
       <form @submit.prevent="validateFormInputs">
         <div class="row">
-
           <!-- Start:: Name Input -->
           <base-input
             col="6"
@@ -33,59 +32,37 @@
           />
           <!-- End:: Name Input -->
 
-          <!-- Start:: Number of Available Auctions -->
-          <base-input
+          <!-- Start:: Type Input -->
+          <base-select-input
             col="6"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.number_of_available_bids')"
-            v-model.number="data.number_of_available_bids"
-            min="1"
+            :optionsList="packageTypes"
+            :placeholder="$t('PLACEHOLDERS.type')"
+            v-model="data.type"
             required
           />
-          <!-- End:: Number of Available Auctions -->
+          <!-- End:: Type Input -->
 
-          <!-- Start:: Number of Available Bids -->
+          <!-- Start:: Number of Sessions -->
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.number_of_available_auctions')"
-            v-model.number="data.number_of_available_auctions"
+            :placeholder="$t('PLACEHOLDERS.lecture_numbers')"
+            v-model.number="data.number_of_sessions"
             min="1"
             required
           />
-          <!-- End:: Number of Available Bids -->
-
-          <!-- Start:: Auction Order -->
-          <base-input
-            col="6"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.auction_order')"
-            v-model.number="data.auction_order"
-            min="1"
-            required
-          />
-          <!-- End:: Auction Order -->
+          <!-- End:: Number of Sessions -->
 
           <!-- Start:: Price Input -->
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.price')"
+            :placeholder="$t('PLACEHOLDERS.package_price')"
             v-model.number="data.price"
             min="1"
             required
           />
           <!-- End:: Price Input -->
-
-          <!-- Start:: Price After Discount Input -->
-          <base-input
-            col="6"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.price_after_discount')"
-            v-model.number="data.price_after_discount"
-            min="0"
-          />
-          <!-- End:: Price After Discount Input -->
 
           <!-- Start:: Status Dropdown -->
           <base-select-input
@@ -124,16 +101,26 @@ export default {
       data: {
         name_ar: "",
         name_en: "",
-        number_of_available_auctions: null,
-        number_of_available_bids: null,
-        auction_order: null,
+        number_of_sessions: null,
         price: null,
-        price_after_discount: null,
+        type: null,
         is_active: null,
       },
       statusOptions: [
         { id: 1, name: this.$t("STATUS.active"), value: 1 },
         { id: 0, name: this.$t("STATUS.notActive"), value: 0 },
+      ],
+      packageTypes: [
+        {
+          id: 1,
+          name: this.$t("PLACEHOLDERS.shadow_teacher_package"),
+          value: "shadow_teacher_package",
+        },
+        {
+          id: 2,
+          name: this.$t("PLACEHOLDERS.lecture_package"),
+          value: "lecture_package",
+        },
       ],
     };
   },
@@ -144,26 +131,23 @@ export default {
     },
     async submitForm() {
       const REQUEST_DATA = new FormData();
-      REQUEST_DATA.append("name[ar]", this.data.name_ar);
-      REQUEST_DATA.append("name[en]", this.data.name_en);
-      REQUEST_DATA.append(
-        "number_of_available_auctions",
-        this.data.number_of_available_bids
-      );
-      REQUEST_DATA.append(
-        "number_of_available_bids",
-        this.data.number_of_available_auctions
-      );
-      REQUEST_DATA.append("auction_order", this.data.auction_order);
-      REQUEST_DATA.append("price", this.data.price);
-      if (this.data.price_after_discount) {
-        REQUEST_DATA.append(
-          "price_after_discount",
-          this.data.price_after_discount
-        );
+      if (this.data.name_ar) {
+        REQUEST_DATA.append("name[ar]", this.data.name_ar);
+      }
+      if (this.data.name_en) {
+        REQUEST_DATA.append("name[en]", this.data.name_en);
+      }
+      if (this.data.type) {
+        REQUEST_DATA.append("type", this.data.type?.value);
+      }
+      if (this.data.number_of_sessions) {
+        REQUEST_DATA.append("lecture_number", this.data.number_of_sessions);
+      }
+      if (this.data.price) {
+        REQUEST_DATA.append("price", this.data.price);
       }
       if (this.data.is_active) {
-        REQUEST_DATA.append("is_active", this.data.is_active?.value);
+        REQUEST_DATA.append("status", this.data.is_active?.value);
       }
 
       try {

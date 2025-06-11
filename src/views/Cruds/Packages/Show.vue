@@ -32,61 +32,37 @@
           />
           <!-- End:: Name Input -->
 
-          <!-- Start:: Number of Available Auctions -->
+          <!-- Start:: Type Input -->
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.number_of_available_bids')"
-            v-model.number="data.number_of_available_bids"
-            min="1"
+            :placeholder="$t('PLACEHOLDERS.type')"
+            v-model="data.type"
             disabled
           />
-          <!-- End:: Number of Available Auctions -->
+          <!-- End:: Type Input -->
 
-          <!-- Start:: Number of Available Bids -->
+          <!-- Start:: Number of Sessions -->
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.number_of_available_auctions')"
-            v-model.number="data.number_of_available_auctions"
+            :placeholder="$t('PLACEHOLDERS.lecture_numbers')"
+            v-model.number="data.number_of_sessions"
             min="1"
             disabled
           />
-          <!-- End:: Number of Available Bids -->
-
-          <!-- Start:: Auction Order -->
-          <base-input
-            col="6"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.auction_order')"
-            v-model.number="data.auction_order"
-            min="1"
-            disabled
-          />
-          <!-- End:: Auction Order -->
+          <!-- End:: Number of Sessions -->
 
           <!-- Start:: Price Input -->
           <base-input
             col="6"
             type="text"
-            :placeholder="$t('PLACEHOLDERS.price')"
+            :placeholder="$t('PLACEHOLDERS.package_price')"
             v-model.number="data.price"
             min="1"
             disabled
           />
           <!-- End:: Price Input -->
-
-          <!-- Start:: Price After Discount Input -->
-          <base-input
-            col="12"
-            type="text"
-            :placeholder="$t('PLACEHOLDERS.price_after_discount')"
-            v-model.number="data.price_after_discount"
-            min="0"
-            v-if="data.price_after_discount"
-            disabled
-          />
-          <!-- End:: Price After Discount Input -->
 
           <!-- Start:: Deactivate Switch Input -->
           <div class="input_wrapper switch_wrapper my-5">
@@ -119,12 +95,10 @@ export default {
       data: {
         name_ar: "",
         name_en: "",
-        number_of_available_auctions: null,
-        number_of_available_bids: null,
-        auction_order: null,
+        number_of_sessions: null,
         price: null,
-        price_after_discount: null,
-        active: null,
+        type: null,
+        is_active: null,
       },
       statusOptions: [
         { id: 1, name: this.$t("STATUS.active"), value: 1 },
@@ -142,12 +116,10 @@ export default {
         });
         this.data.name_ar = res.data.data.name_ar;
         this.data.name_en = res.data.data.name_en;
-        this.data.number_of_available_auctions = res.data.data.number_of_available_bids;
-        this.data.number_of_available_bids = res.data.data.number_of_available_auctions;
-        this.data.auction_order = res.data.data.auction_order;
+        this.data.number_of_sessions = res.data.data.number_of_sessions;
         this.data.price = res.data.data.price;
-        this.data.price_after_discount = res.data.data.price_after_discount;
-        this.data.active = res.data.data.is_active;
+        this.data.type = res.data.data.type;
+        this.data.is_active = res.data.data.is_active;
       } catch (error) {
         this.loading = false;
         console.log(error?.response?.data?.message);

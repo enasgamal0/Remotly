@@ -1120,25 +1120,26 @@
       <!-- End:: notifications Route -->
 
       <!-- Start:: FAQ Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('faqs index', 'faqs')"
+        v-if="$can('settings index', 'settings')"
       >
         <router-link to="/questions/all">
-          <span class="route_icon">
+          <span class="route_icon d-flex justify-center" style="background-color: rgba(207, 70, 195, 0.3); border-radius: 6px; width: 40px; height: 40px;">
             <img
-              src="@/assets/media/icons/ui_icons/question.png"
+              src="@/assets/media/icons/ui_icons/question.svg"
               alt="icon"
-              width="40"
-              height="40"
+              width="35"
+              height="35"
+              class="m-auto"
             />
           </span>
           <span class="route_text">
             {{ $t("PLACEHOLDERS.faq") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: FAQ Route -->
 
       <!-- Start:: app settings Route -->

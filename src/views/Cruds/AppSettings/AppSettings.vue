@@ -13,53 +13,96 @@
     <div class="single_step_form_content_wrapper">
       <form @submit.prevent="validateFormInputs">
         <div class="row">
+          <!-- VAT Rate -->
           <base-input
-            type="text"
+            type="number"
             col="6"
-            :placeholder="$t('PLACEHOLDERS.tax')"
-            v-model.trim="data.tax"
-            
+            :placeholder="$t('PLACEHOLDERS.vat_rate')"
+            v-model.trim="data.vat_rate"
+            step="0.01"
+            min="0"
+            max="100"
           />
 
+          <!-- App Commission Rate -->
           <base-input
-            type="text"
+            type="number"
             col="6"
-            :placeholder="$t('PLACEHOLDERS.ratio_of_start_price')"
-            v-model.trim="data.ratio_of_start_price"
-            
+            :placeholder="$t('PLACEHOLDERS.app_commission_rate')"
+            v-model.trim="data.app_commission_rate"
+            step="0.01"
+            min="0"
+            max="100"
           />
 
+          <!-- Cancellation Time Limit (Hours) -->
           <base-input
-            type="text"
+            type="number"
             col="12"
-            :placeholder="$t('PLACEHOLDERS.incremental_ratio')"
-            v-model.trim="data.incremental_ratio"
-            
+            :placeholder="$t('PLACEHOLDERS.cancellation_time_limit_hours')"
+            v-model.trim="data.cancellation_time_limit_hours"
+            min="0"
           />
+
+          <!-- Cancellation Penalty Amount (SAR) -->
+          <base-input
+            type="number"
+            col="6"
+            :placeholder="$t('PLACEHOLDERS.cancellation_penalty_amount')"
+            v-model.trim="data.cancellation_penalty_amount"
+            step="0.01"
+            min="0"
+          />
+
+          <!-- Payment Confirmation Duration -->
+          <base-input
+            type="number"
+            col="6"
+            :placeholder="$t('PLACEHOLDERS.payment_confirmation_duration')"
+            v-model.trim="data.payment_confirmation_duration"
+            min="0"
+          />
+
+          <!-- Group Session Discount (SAR) -->
+          <base-input
+            type="number"
+            col="6"
+            :placeholder="$t('PLACEHOLDERS.group_session_discount')"
+            v-model.trim="data.group_session_discount"
+            step="0.01"
+            min="0"
+          />
+
+          <!-- Online Lecture Duration -->
+          <base-input
+            type="number"
+            col="6"
+            :placeholder="$t('PLACEHOLDERS.online_lecture_duration')"
+            v-model.trim="data.online_lecture_duration"
+            min="0"
+          />
+
           <hr class="my-5" style="width: 97%;"/>
-          <h6 class="mb-5 font-weight-bold" style="color: #af18f9;">{{ $t("PLACEHOLDERS.appCommission") }}</h6>
+          <h6 class="mb-5 font-weight-bold" style="color: #af18f9;">{{ $t("PLACEHOLDERS.pricing") }}</h6>
+          
+          <!-- Online Lecture Price -->
           <base-input
             type="number"
             col="6"
-            :placeholder="$t('PLACEHOLDERS.reference_price')"
-            v-model.trim="data.reference_price"
-            
+            :placeholder="$t('PLACEHOLDERS.online_lecture_price')"
+            v-model.trim="data.online_lecture_price"
+            step="0.01"
+            min="0"
           />
 
+          <!-- Online Lecture Offer Price -->
           <base-input
             type="number"
             col="6"
-            :placeholder="$t('PLACEHOLDERS.less_than_reference_price')"
-            v-model.trim="data.less_than_reference_price"
-            
-          />
-
-          <base-input
-            type="number"
-            col="12"
-            :placeholder="$t('PLACEHOLDERS.greater_than_reference_price')"
-            v-model.trim="data.greater_than_reference_price"
-            
+            :placeholder="$t('PLACEHOLDERS.online_lecture_offer_price')"
+            v-model.trim="data.online_lecture_offer_price"
+            step="0.01"
+            min="0"
           />
 
           <div class="btn_wrapper">
@@ -84,12 +127,15 @@ export default {
     return {
       isWaitingRequest: false,
       data: {
-        tax: null,
-        reference_price: null,
-        less_than_reference_price: null,
-        greater_than_reference_price: null,
-        ratio_of_start_price: null,
-        incremental_ratio: null,
+        vat_rate: null,
+        app_commission_rate: null,
+        cancellation_time_limit_hours: null,
+        cancellation_penalty_amount: null,
+        payment_confirmation_duration: null,
+        group_session_discount: null,
+        online_lecture_duration: null,
+        online_lecture_price: null,
+        online_lecture_offer_price: null,
       },
     };
   },
@@ -98,14 +144,17 @@ export default {
       try {
         let res = await this.$axios.get("settings?key=dashboard_settings");
         const settings = res.data.data[0].value;
-        this.data.tax = settings.tax;
-        this.data.reference_price = settings.commission.reference_price;
-        this.data.less_than_reference_price =
-          settings.commission.less_than_reference_price;
-        this.data.greater_than_reference_price =
-          settings.commission.greater_than_reference_price;
-        this.data.ratio_of_start_price = settings.ratio_of_start_price;
-        this.data.incremental_ratio = settings.incremental_ratio;
+        
+        // Map the response data to component data
+        this.data.vat_rate = settings.vat_rate;
+        this.data.app_commission_rate = settings.app_commission_rate;
+        this.data.cancellation_time_limit_hours = settings.cancellation_time_limit_hours;
+        this.data.cancellation_penalty_amount = settings.cancellation_penalty_amount;
+        this.data.payment_confirmation_duration = settings.payment_confirmation_duration;
+        this.data.group_session_discount = settings.group_session_discount;
+        this.data.online_lecture_duration = settings.online_lecture_duration;
+        this.data.online_lecture_price = settings.pricing?.online_lecture_price;
+        this.data.online_lecture_offer_price = settings.pricing?.online_lecture_offer_price;
       } catch (error) {
         console.error(error.response.data.message);
       }
@@ -114,31 +163,20 @@ export default {
       this.isWaitingRequest = true;
       const REQUEST_DATA = new FormData();
       REQUEST_DATA.append("key", "dashboard_settings");
-      REQUEST_DATA.append("value[tax]", this.data.tax);
-      REQUEST_DATA.append(
-        "value[commission][reference_price]",
-        this.data.reference_price
-      );
-      REQUEST_DATA.append(
-        "value[commission][less_than_reference_price]",
-        this.data.less_than_reference_price
-      );
-      REQUEST_DATA.append(
-        "value[commission][greater_than_reference_price]",
-        this.data.greater_than_reference_price
-      );
-      if (this.data.ratio_of_start_price){
-        REQUEST_DATA.append(
-          "value[ratio_of_start_price]",
-          this.data.ratio_of_start_price
-        );
-      }
-      if (this.data.incremental_ratio){
-        REQUEST_DATA.append(
-          "value[incremental_ratio]",
-          this.data.incremental_ratio
-        );
-      }
+      
+      // Append all form data
+      REQUEST_DATA.append("value[vat_rate]", this.data.vat_rate);
+      REQUEST_DATA.append("value[app_commission_rate]", this.data.app_commission_rate);
+      REQUEST_DATA.append("value[cancellation_time_limit_hours]", this.data.cancellation_time_limit_hours);
+      REQUEST_DATA.append("value[cancellation_penalty_amount]", this.data.cancellation_penalty_amount);
+      REQUEST_DATA.append("value[payment_confirmation_duration]", this.data.payment_confirmation_duration);
+      REQUEST_DATA.append("value[group_session_discount]", this.data.group_session_discount);
+      REQUEST_DATA.append("value[online_lecture_duration]", this.data.online_lecture_duration);
+      
+      // Pricing data
+      REQUEST_DATA.append("value[pricing][online_lecture_price]", this.data.online_lecture_price);
+      REQUEST_DATA.append("value[pricing][online_lecture_offer_price]", this.data.online_lecture_offer_price);
+
       try {
         await this.$axios.post("settings", REQUEST_DATA);
         this.isWaitingRequest = false;
@@ -150,10 +188,6 @@ export default {
       }
     },
     validateFormInputs() {
-      // if (!this.data.tax) {
-      //   this.$message.error(this.$t("VALIDATION.tax"));
-      //   return;
-      // }
       this.submitForm();
     },
   },

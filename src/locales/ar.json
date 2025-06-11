@@ -1264,6 +1264,16 @@
   },
 
   "PLACEHOLDERS": {
+    "vat_rate": "نسبة ضريبة القيمة المضافة (%)",
+    "app_commission_rate": "نسبة عمولة التطبيق (%)",
+    "cancellation_time_limit_hours": "الساعات المتاحة قبل إلغاء المحاضرة بدون غرامة",
+    "cancellation_penalty_amount": "قيمة غرامة إلغاء المحاضرة (بالريال)",
+    "payment_confirmation_duration": "مدة تأكيد الدفع بواسطة طالب الخدمة",
+    "group_session_discount": "قيمة الخصم من الطلاب في الحصص الجماعية (بالريال)",
+    "online_lecture_duration": "مدة المحاضرات الأون لاين",
+    "pricing": "الأسعار",
+    "online_lecture_price": "سعر المحاضرة الأون لاين (بالريال)",
+    "online_lecture_offer_price": "سعر المحاضرة الأون لاين في حالة وجود عرض (بالريال)",
     "shadow_teacher_package": "باقة معلم ظل",
     "lecture_package": "باقة محاضرات",
     "type": "نوع الباقة",

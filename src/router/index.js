@@ -2505,8 +2505,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "questions index",
-                subject: "questions",
+                action: "settings index",
+                subject: "settings",
               },
             },
           },
@@ -2517,8 +2517,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "questions create",
-                subject: "questions",
+                action: "settings create",
+                subject: "settings",
               },
             },
           },
@@ -2530,8 +2530,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "questions edit",
-                subject: "questions",
+                action: "settings edit",
+                subject: "settings",
               },
             },
           },

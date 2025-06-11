@@ -189,7 +189,7 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `settings?key=website-contacts`,
+          url: `settings?key=contact-us`,
         });
         // Start:: Set Data
 
@@ -225,7 +225,7 @@ export default {
 
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
-      REQUEST_DATA.append("key", "website-contacts");
+      REQUEST_DATA.append("key", "contact-us");
       this.phones.forEach((element) => {
         if (element.phone) {
           REQUEST_DATA.append(`value[mobile][]`, element.phone);
@@ -268,7 +268,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `settings?key=website-contacts`,
+          url: `settings?key=contact-us`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;
