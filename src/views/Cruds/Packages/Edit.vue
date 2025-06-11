@@ -15,6 +15,14 @@
     <div class="single_step_form_content_wrapper">
       <form @submit.prevent="validateFormInputs">
         <div class="row">
+          <base-image-upload-input
+            col="12"
+            identifier="image"
+            :preSelectedImage="data.image.path"
+            :placeholder="$t('PLACEHOLDERS.image')"
+            @selectImage="selectImage"
+            required
+          />
           <!-- Start:: Name Input -->
           <base-input
             col="6"
@@ -95,6 +103,10 @@ export default {
         price: null,
         type: null,
         is_active: null,
+        image: {
+          path: null,
+          file: null,
+        },
       },
       statusOptions: [
         { id: 1, name: this.$t("STATUS.active"), value: 1 },
@@ -115,6 +127,9 @@ export default {
     };
   },
   methods: {
+    selectImage(selectedImage) {
+      this.data.image = selectedImage;
+    },
     // Start:: validate Form Inputs
     validateFormInputs() {
       this.isWaitingRequest = true;
@@ -174,6 +189,7 @@ export default {
         this.data.price = res.data.data.price;
         this.data.type = res.data.data.type;
         this.data.is_active = res.data.data.is_active;
+        this.data.image.path = res.data.data?.image;
       } catch (error) {
         this.loading = false;
         console.log(error?.response?.data?.message);

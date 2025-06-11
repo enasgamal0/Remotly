@@ -15,6 +15,14 @@
     <div class="single_step_form_content_wrapper">
       <form>
         <div class="row">
+          <div class="preview-container text-center my-3">
+            <img
+              v-if="data.image?.path"
+              col="12"
+              :src="data.image?.path"
+              :alt="$t('PLACEHOLDERS.image')"
+            />
+          </div>
           <!-- Start:: Name Input -->
           <base-input
             col="6"
@@ -99,6 +107,10 @@ export default {
         price: null,
         type: null,
         is_active: null,
+        image: {
+          path: null,
+          file: null,
+        },
       },
       statusOptions: [
         { id: 1, name: this.$t("STATUS.active"), value: 1 },
@@ -120,6 +132,7 @@ export default {
         this.data.price = res.data.data.price;
         this.data.type = res.data.data.type;
         this.data.is_active = res.data.data.is_active;
+        this.data.image.path = res.data.data?.image;
       } catch (error) {
         this.loading = false;
         console.log(error?.response?.data?.message);
