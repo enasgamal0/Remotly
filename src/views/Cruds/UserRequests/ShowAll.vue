@@ -98,15 +98,6 @@
         </template>
         <!-- Start:: No Data State -->
 
-        <!-- Start:: Mobile -->
-        <template v-slot:[`item.mobile`]="{ item }">
-          <h6 v-if="item.mobile" dir="ltr">
-            {{ item.country_code }}{{ item.mobile }}
-          </h6>
-          <h6 v-else>-</h6>
-        </template>
-        <!-- End:: Mobile -->
-
         <!-- Start:: Item Image -->
         <template v-slot:[`item.id`]="{ item, index }">
           <div class="table_image_wrapper">
@@ -140,6 +131,13 @@
             {{ $t("TABLES.noData") }}
           </p>
           <p v-else>{{ item.title }}</p>
+        </template>
+
+        <template v-slot:[`item.mobile`]="{ item }">
+          <p v-if="!item.mobile">
+            -
+          </p>
+          <p v-else>{{ item.mobile }}</p>
         </template>
 
         <template v-slot:[`item.foundation_type_text`]="{ item }">

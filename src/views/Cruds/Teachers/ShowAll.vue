@@ -134,15 +134,6 @@
         </template>
         <!-- Start:: No Data State -->
 
-        <!-- Start:: Mobile -->
-        <template v-slot:[`item.mobile`]="{ item }">
-          <h6 v-if="item.mobile" dir="ltr">
-            {{ item.country_code }}{{ item.mobile }}
-          </h6>
-          <h6 v-else>-</h6>
-        </template>
-        <!-- End:: Mobile -->
-
         <!-- Start:: Item Image -->
         <template v-slot:[`item.id`]="{ item, index }">
           <div class="table_image_wrapper">
